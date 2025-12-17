@@ -20,7 +20,7 @@ export default function FirstScreen() {
     useState<Notification[]>(notificationsData);
   const { isOnline } = useSelector((state: RootState) => state.auth);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
-  const [showVehicleMakeModal, setShowVehicleMakeModal] = useState(true);
+  const [showVehicleMakeModal, setShowVehicleMakeModal] = useState(false);
   const [isSubmittingVehicle, setIsSubmittingVehicle] = useState(false);
 
   const closeVehicleMakeModal = () => {

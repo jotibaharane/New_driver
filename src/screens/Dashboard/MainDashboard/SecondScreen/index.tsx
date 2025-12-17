@@ -1,4 +1,4 @@
-import OriginMarker from '@assets/map/OriginMarker';
+import Truck from '@assets/map/Truck';
 import Loader from '@components/common/Loader';
 import { RootState } from '@store/index';
 import React, { FC, useEffect, useRef } from 'react';
@@ -31,7 +31,7 @@ const SecondScreen: FC = () => {
       );
     }
   }, [driverLocation]);
-
+  console.log({ driverLocation: driverLocation?.rotation });
   return (
     <SafeAreaView style={styles.container}>
       <Loader visible={false} />
@@ -60,13 +60,16 @@ const SecondScreen: FC = () => {
               anchor={{ x: 0.5, y: 0.5 }}
               flat
               tracksViewChanges={false}
+              rotation={Number(driverLocation.rotation)}
             >
-              <OriginMarker size={34} />
+              <Truck height={50} width={50} />
             </Marker>
           )}
         </MapView>
       </View>
-
+      <Button mode="contained" onPress={() => console.log('Navigate Press')}>
+        Navigate
+      </Button>
       {/* Floating Buttons */}
       <View style={styles.bottomContainer}>
         <Button
@@ -97,7 +100,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 40,
     left: 0,
     right: 0,
     flexDirection: 'row',

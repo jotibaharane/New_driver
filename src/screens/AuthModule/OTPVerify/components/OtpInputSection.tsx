@@ -117,7 +117,7 @@ const OtpScreen: React.FC<OtpScreenProps> = ({ phoneNumber }) => {
     if (resp?.status === '00') {
       dispatch(loginSuccess(resp?.Driver_Details));
       dispatch(
-        setOnlineStatus(resp?.Driver_Details?.DriverTripStatus !== 'pending'),
+        setOnlineStatus(resp?.Driver_Details?.DriverTripStatus !== 'Inactive'),
       );
     } else {
       setOtp(['', '', '', '']);

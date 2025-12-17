@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface Coordinate {
   latitude: number;
   longitude: number;
+  rotation: number;
 }
 
 interface MapState {
