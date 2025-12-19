@@ -83,6 +83,6 @@ export interface DriverDetails {
   State: string;
   Pincode: string;
   Address: string;
-  DriverTripStatus: 'Active' | 'Inactive' | string;
+  Driver_LPStatus: 'Active' | 'Inactive' | string;
   insert_date: string; // ISO date string
 }

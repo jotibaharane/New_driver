@@ -32,3 +32,9 @@ export interface PostDriverPayload {
   vehicleNumber: string;
   driverMobile: string;
 }
+
+export interface driverOnlineOfflineRequest {
+  DriverID: string;
+  VendorID: string;
+  Status: 'Online' | 'Offline';
+}

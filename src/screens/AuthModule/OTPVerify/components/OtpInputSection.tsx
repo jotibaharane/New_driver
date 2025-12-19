@@ -14,9 +14,9 @@ import { useDispatch } from 'react-redux';
 
 // ⭐ Auto OTP detection module
 import { login, verifyOTP } from '@api/endpoints/auth.api';
-import { loginSuccess, setOnlineStatus } from '@store/slices/authSlice';
+import { loginSuccess } from '@store/slices/authSlice';
 import { formatPhone } from '@utils/formatter';
-import { isOTPValid } from '@utils/validation';
+import { isOTPValid } from '@utils/validators/common.validator';
 import SmsRetriever from 'react-native-sms-retriever';
 
 interface OtpScreenProps {
@@ -116,9 +116,6 @@ const OtpScreen: React.FC<OtpScreenProps> = ({ phoneNumber }) => {
 
     if (resp?.status === '00') {
       dispatch(loginSuccess(resp?.Driver_Details));
-      dispatch(
-        setOnlineStatus(resp?.Driver_Details?.DriverTripStatus !== 'Inactive'),
-      );
     } else {
       setOtp(['', '', '', '']);
       Toast.show({ type: 'error', text1: resp?.message });

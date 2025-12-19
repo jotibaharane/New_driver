@@ -69,7 +69,7 @@ export const deliveriesData: Delivery[] = [
 ];
 
 export const quickActions: QuickAction[] = [
-  { id: '1', icon: 'camera', label: 'Documents', color: '#2196f3' },
+  { id: '1', icon: 'camera', label: 'Load Post', color: '#2196f3' },
   { id: '2', icon: 'note-plus', label: 'Duty Log', color: '#4caf50' },
   { id: '3', icon: 'gas-station', label: 'Fuel Log', color: '#ff9800' },
   { id: '4', icon: 'wrench', label: 'Maintenance', color: '#9c27b0' },

@@ -1,4 +1,3 @@
-// validation.ts
 export const isEmail = (email: string) =>
   /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/.test(email);
 export const isPhone = (phone: string) => /^[0-9]{10}$/.test(phone);

@@ -1,7 +1,7 @@
 import { login } from '@api/endpoints/auth.api';
 import { useNavigation } from '@react-navigation/native';
 import { formatPhone } from '@utils/formatter';
-import { isPhone } from '@utils/validation';
+import { isPhone } from '@utils/validators/common.validator';
 import { useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';

@@ -59,6 +59,8 @@ interface TransformLocationToPayloadRequest {
   speed: any;
   apiResponse: any;
   direction: any;
+  tripStatus: any;
+  status: any;
 }
 
 export const transformLocationToPayload = async ({
@@ -68,6 +70,8 @@ export const transformLocationToPayload = async ({
   speed,
   apiResponse,
   direction,
+  tripStatus,
+  status,
 }: TransformLocationToPayloadRequest): Promise<any> => {
   const data = apiResponse?.data;
   const resp = data?.results?.[0] ?? data?.response ?? data;
@@ -82,7 +86,7 @@ export const transformLocationToPayload = async ({
   const payload = {
     DriverID: driverDetails?.DriverID,
     VendorID: driverDetails?.VendorID,
-    TripID: null,
+    LP_ID: null,
     VehicleID: driverDetails?.VehicleID,
     MobileNo: driverDetails?.MobileNo,
     Lat: latitude,
@@ -95,8 +99,8 @@ export const transformLocationToPayload = async ({
     State: findComponent(['administrative_area_level_1']),
     Pincode: findComponent(['postal_code']),
     Address: resp?.formatted_address ?? '',
-    DriverTripStatus: driverDetails?.DriverTripStatus,
-    Status: driverDetails?.Status,
+    Driver_LPStatus: tripStatus,
+    Status: status,
   };
 
   return payload;

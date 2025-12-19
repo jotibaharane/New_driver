@@ -1,11 +1,13 @@
+import { driverOnlineOffline } from '@api/endpoints/avilable.api';
 import Loader from '@components/common/Loader';
 import Icon from '@react-native-vector-icons/material-design-icons';
 import { RootState } from '@store/index';
+import { setOnlineStatus } from '@store/slices/authSlice';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Card, Switch, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ActionButton } from '../components/ActionButton';
 import Header from '../components/Header';
 import NotificationsModal from '../components/NotificationsModal';
@@ -16,9 +18,14 @@ import { Notification } from './types';
 
 // ==================== MAIN DASHBOARD ====================
 export default function FirstScreen() {
+  const dispatch = useDispatch();
   const [notifications, setNotifications] =
     useState<Notification[]>(notificationsData);
-  const { isOnline } = useSelector((state: RootState) => state.auth);
+  const { isOnline, driverDetails } = useSelector(
+    (state: RootState) => state.auth,
+  );
+  const { driverLocation } = useSelector((s: RootState) => s.map);
+  console.log({ driverLocation });
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showVehicleMakeModal, setShowVehicleMakeModal] = useState(false);
   const [isSubmittingVehicle, setIsSubmittingVehicle] = useState(false);
@@ -28,6 +35,20 @@ export default function FirstScreen() {
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleDriverOnlineOffline = async () => {
+    try {
+      const resp = await driverOnlineOffline({
+        DriverID: driverDetails?.DriverID || '',
+        Status: !isOnline ? 'Online' : 'Offline',
+        VendorID: driverDetails?.VendorID || '',
+      });
+      console.log({ resp });
+      if (resp?.status === '00') {
+        dispatch(setOnlineStatus(!isOnline));
+      }
+    } catch (error) {}
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -56,7 +77,9 @@ export default function FirstScreen() {
                   <Text
                     style={[
                       styles.statusValue,
-                      { color: isOnline ? '#4CAF50' : '#9E9E9E' },
+                      {
+                        color: isOnline ? '#4CAF50' : '#9E9E9E',
+                      },
                     ]}
                   >
                     {isOnline ? 'ONLINE' : 'OFFLINE'}
@@ -65,11 +88,7 @@ export default function FirstScreen() {
               </View>
               <Switch
                 value={isOnline}
-                onValueChange={() => {
-                  if (!isOnline) {
-                    setShowVehicleMakeModal(true);
-                  }
-                }}
+                onValueChange={handleDriverOnlineOffline}
                 color="#4CAF50"
                 style={styles.statusSwitch}
               />
@@ -102,7 +121,15 @@ export default function FirstScreen() {
             <Text style={styles.sectionTitle}>Quick Actions</Text>
             <View style={styles.actionsGrid}>
               {quickActions.map(action => (
-                <ActionButton key={action.id} action={action} />
+                <ActionButton
+                  key={action.id}
+                  action={action}
+                  onPress={(val: any) => {
+                    if (val?.id === '1') {
+                      setShowVehicleMakeModal(true);
+                    }
+                  }}
+                />
               ))}
             </View>
           </Card.Content>

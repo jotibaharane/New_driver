@@ -1,5 +1,8 @@
 import apiClient from '@api/base';
-import { PostDriverPayload } from '@api/types/avilable.types';
+import {
+  driverOnlineOfflineRequest,
+  PostDriverPayload,
+} from '@api/types/avilable.types';
 import { ENV } from '@config/env';
 import axios from 'axios';
 
@@ -29,4 +32,14 @@ export const getCoordinateDetails = async ({
     `https://maps.googleapis.com/maps/api/geocode/json?latlng=${LATITUDE},${LONGITUDE}&key=${ENV.MAP_API_KEY}`,
   );
   return resp;
+};
+
+export const driverOnlineOffline = async (
+  payload: driverOnlineOfflineRequest,
+): Promise<any> => {
+  const response = await apiClient.post(
+    '/Driver_online_offline_status',
+    payload,
+  );
+  return response.data;
 };
