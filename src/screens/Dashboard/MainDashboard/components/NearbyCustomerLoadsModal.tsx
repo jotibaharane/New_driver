@@ -1,4 +1,4 @@
-import { useNearbyCustomersPostQuery } from '@api/hooks_api';
+import { useNearbyCustomersPostQuery } from '@api/index';
 import { RootState } from '@store/index';
 import React, { FC } from 'react';
 import {

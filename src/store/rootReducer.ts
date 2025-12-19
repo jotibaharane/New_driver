@@ -1,6 +1,6 @@
 // rootReducer.ts
+import api from '@api/rtk/location.api';
 import { combineReducers } from '@reduxjs/toolkit';
-import api from '../api/hooks_api';
 import appReducer from './slices/appSlice';
 import authReducer from './slices/authSlice';
 import mapReducer from './slices/mapSlice';

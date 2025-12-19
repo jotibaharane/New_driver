@@ -1,8 +1,8 @@
+import SafeContainer from '@components/layout/SafeContainer';
+import { COLORS } from '@config/theme';
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import SafeContainer from '../../../components/layout/SafeContainer';
-import { COLORS } from '../../../config/theme';
 import { FooterSection } from './components/FooterSection';
 import { HeaderSection } from './components/HeaderSection';
 import { LogoSection } from './components/LogoSection';

@@ -13,7 +13,8 @@ import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 
 // ⭐ Auto OTP detection module
-import { login, verifyOTP } from '@api/endpoints/auth.api';
+
+import { login, verifyOTP } from '@api/index';
 import { loginSuccess } from '@store/slices/authSlice';
 import { formatPhone } from '@utils/formatter';
 import { isOTPValid } from '@utils/validators/common.validator';
@@ -115,7 +116,7 @@ const OtpScreen: React.FC<OtpScreenProps> = ({ phoneNumber }) => {
     const resp = await verifyOTP({ mobile_number: phoneNumber, otp: code });
 
     if (resp?.status === '00') {
-      dispatch(loginSuccess(resp?.Driver_Details));
+      dispatch(loginSuccess(resp?.Driver_Details as any));
     } else {
       setOtp(['', '', '', '']);
       Toast.show({ type: 'error', text1: resp?.message });

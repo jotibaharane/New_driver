@@ -24,10 +24,6 @@ export default class ErrorBoundary extends React.Component<
 
   componentDidCatch(error: any, info: any) {
     console.warn('💥 ERROR BOUNDARY CAUGHT:', error, info);
-
-    // TODO:
-    // send logs to Sentry / Firebase Crashlytics
-    // Crashlytics().recordError(error);
   }
 
   handleRestart = () => {

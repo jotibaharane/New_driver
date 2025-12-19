@@ -1,4 +1,4 @@
-import { ApiResponse } from './auth.types';
+import { ApiResponse } from '@api/rest/auth/auth.types';
 
 export interface PincodeData {
   Name: string;

@@ -3,7 +3,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { getCoordinateDetails } from '@api/endpoints/avilable.api';
+import { getCoordinateDetails } from '@api/index';
 import { transformLocationToPayload } from '@services/location/locationPayload.service';
 import { canEmitLocation } from '@services/locationEmitter.service';
 import { emitDriverLocation } from '@socket/socket.emitters';

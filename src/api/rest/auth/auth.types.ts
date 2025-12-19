@@ -39,27 +39,7 @@ export interface UserState {
   isLogin?: boolean;
   token?: string | boolean;
 }
-export interface DriverDetails {
-  AssignmentID: string;
-  DriverID: string;
-  full_name: string;
-  Phone: string;
-  MobileNo: string;
-  VehicleID: string;
-  registration_no: string;
-  VehicleType: string;
-  AssignmentDate: string; // ISO date string
-  Status: string;
-  Lat: number;
-  Lng: number;
-  City: string;
-  District: string;
-  Taluka: string;
-  State: string;
-  Pincode: string;
-  Address: string;
-  insert_date: string; // ISO date string
-}
+
 export interface ValidateOtpResponse extends ApiResponse {
   Driver_Details: DriverDetails;
 }

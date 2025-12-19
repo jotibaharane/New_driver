@@ -1,4 +1,4 @@
-import { login } from '@api/endpoints/auth.api';
+import { login } from '@api/index';
 import { useNavigation } from '@react-navigation/native';
 import { formatPhone } from '@utils/formatter';
 import { isPhone } from '@utils/validators/common.validator';

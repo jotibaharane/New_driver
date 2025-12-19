@@ -1,5 +1,5 @@
-import Truck from '@assets/map/Truck';
-import Loader from '@components/common/Loader';
+import Loader from '@components/common/ui/Loader';
+import Truck from '@components/map/markers/Truck';
 import { RootState } from '@store/index';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';

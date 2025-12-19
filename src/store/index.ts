@@ -1,7 +1,7 @@
 // index.ts
+import api from '@api/rtk/location.api';
 import { configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
-import api from '../api/hooks_api';
 import persistConfig from './persistConfig';
 import rootReducer from './rootReducer';
 

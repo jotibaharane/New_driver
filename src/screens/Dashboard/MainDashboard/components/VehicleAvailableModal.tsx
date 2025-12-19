@@ -19,17 +19,15 @@ import {
 } from 'react-native-paper';
 
 import {
-  avialbleVehicle,
+  availableVehicle,
   getCoordinateDetails,
-} from '@api/endpoints/avilable.api';
-import {
   useGetDistrictQuery,
   useGetStateQuery,
   useGetTalukaQuery,
-} from '@api/hooks_api';
-import Dropdown from '@components/common/Dropdown';
-import Input from '@components/common/Input';
-import Loader from '@components/common/Loader';
+} from '@api/index';
+import Dropdown from '@components/common/ui/Dropdown';
+import Input from '@components/common/ui/Input';
+import Loader from '@components/common/ui/Loader';
 import { RootState } from '@store/index';
 import { setOnlineStatus } from '@store/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -79,7 +77,7 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
         };
       });
 
-      const response = await avialbleVehicle({
+      const response = await availableVehicle({
         ...values,
         origin,
         routes: transRoute,

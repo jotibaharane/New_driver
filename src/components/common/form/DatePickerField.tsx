@@ -2,7 +2,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
 import { Modal, Platform, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
-import Input from './Input';
+import Input from './ui/Input';
 
 interface DatePickerFieldProps {
   label: string;

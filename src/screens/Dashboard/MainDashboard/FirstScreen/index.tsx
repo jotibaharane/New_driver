@@ -1,5 +1,5 @@
-import { driverOnlineOffline } from '@api/endpoints/avilable.api';
-import Loader from '@components/common/Loader';
+import { driverOnlineOffline } from '@api/index';
+import Loader from '@components/common/ui/Loader';
 import Icon from '@react-native-vector-icons/material-design-icons';
 import { RootState } from '@store/index';
 import { setOnlineStatus } from '@store/slices/authSlice';

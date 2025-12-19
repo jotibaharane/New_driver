@@ -1,14 +1,14 @@
+import { ENV } from '@config/env';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ENV } from '../config/env';
 import {
   DistrictData,
   DistrictRequest,
   GetLocationListRequest,
   PincodeRequest,
   PincodeResponse,
-} from './types/hooks.type';
+} from './hooks.type';
 
-export const api = createApi({
+export const locationApi = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: ENV.API_URL,
@@ -157,6 +157,6 @@ export const {
   useGetStateQuery,
   useGetTalukaQuery,
   useNearbyCustomersPostQuery,
-} = api;
+} = locationApi;
 
-export default api;
+export default locationApi;
