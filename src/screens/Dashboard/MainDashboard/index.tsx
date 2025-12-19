@@ -14,6 +14,7 @@ const MainDashboard = () => {
   const { driverDetails, isOnline } = useSelector(
     (state: RootState) => state?.auth,
   );
+  console.log({ driverDetails });
   const prevLocation = useRef<{
     latitude: number;
     longitude: number;
@@ -86,7 +87,7 @@ const MainDashboard = () => {
     };
   }, [isFocus]);
 
-  return isOnline ? <FirstScreen /> : <SecondScreen />;
+  return !isOnline ? <FirstScreen /> : <SecondScreen />;
 };
 
 export default MainDashboard;

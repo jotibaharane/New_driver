@@ -61,3 +61,7 @@ export const INDIA_REGION: Region = {
   latitudeDelta: 25, // Wide view to show entire India
   longitudeDelta: 25,
 };
+
+export const formatDistance = (distance: number) => {
+  return `${distance} km away`;
+};

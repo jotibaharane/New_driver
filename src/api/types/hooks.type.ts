@@ -110,3 +110,29 @@ export interface PANVerificationResponse extends ApiResponse {
 export interface PANVerificationRequest {
   pan_number: string;
 }
+
+export interface GetLocationListRequest {
+  Lat: number;
+  Lng: number;
+  VehicleType: string;
+  DriverID: string;
+}
+
+export interface LocationItem {
+  LoadPostID: string;
+  CustomerID: string;
+  VehicleType: string;
+  Origin: string;
+  Destination: string;
+  Origin_Lat: number;
+  Origin_Lng: number;
+  Destination_Lat: number;
+  Destination_Lng: number;
+  DistanceInKm: number;
+}
+
+export interface GetLocationListResponse {
+  status: string;
+  message: string;
+  data: LocationItem[];
+}

@@ -1,8 +1,11 @@
 import apiClient from '@api/base';
+import { PostDriverPayload } from '@api/types/avilable.types';
 import { ENV } from '@config/env';
 import axios from 'axios';
 
-export const avialbleVehicle = async (payload: any): Promise<any> => {
+export const avialbleVehicle = async (
+  payload: PostDriverPayload,
+): Promise<any> => {
   const response = await apiClient.post('/Insert_driver_load_post', payload);
   return response.data;
 };

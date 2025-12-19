@@ -1,20 +1,22 @@
 import Truck from '@assets/map/Truck';
 import Loader from '@components/common/Loader';
 import { RootState } from '@store/index';
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import Header from '../components/Header';
+import NearbyCustomerLoadsModal from '../components/NearbyCustomerLoadsModal';
 import { INDIA_REGION, MAP_STYLE } from './helper';
 
 const SecondScreen: FC = () => {
   const mapRef = useRef<MapView>(null);
   const { driverLocation } = useSelector((s: RootState) => s.map);
+  const [showLoadsModal, setShowLoadsModal] = useState(false);
 
-  // ⭐ AUTO FIT MAP TO DRIVER LOCATION
+  // AUTO FIT MAP TO DRIVER LOCATION
   useEffect(() => {
     if (driverLocation && mapRef.current) {
       mapRef.current.animateCamera(
@@ -23,15 +25,22 @@ const SecondScreen: FC = () => {
             latitude: driverLocation.latitude,
             longitude: driverLocation.longitude,
           },
-          zoom: 15, // suggested zoom for driver
+          zoom: 15,
           heading: 0,
           pitch: 0,
         },
-        { duration: 800 }, // smooth animation
+        { duration: 800 },
       );
     }
   }, [driverLocation]);
-  console.log({ driverLocation: driverLocation?.rotation });
+
+  // useEffect(() => {
+  //   const socket = getSocket();
+  //   socket?.on('driverLocationUpdate', arg => {
+  //     console.log({ arg });
+  //   });
+  // }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Loader visible={false} />
@@ -67,27 +76,21 @@ const SecondScreen: FC = () => {
           )}
         </MapView>
       </View>
-      <Button mode="contained" onPress={() => console.log('Navigate Press')}>
-        Navigate
-      </Button>
-      {/* Floating Buttons */}
-      <View style={styles.bottomContainer}>
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={() => console.log('Navigate Press')}
-        >
-          Navigate
-        </Button>
 
-        <Button
-          mode="contained-tonal"
-          style={styles.button}
-          onPress={() => console.log('SOS Press')}
-        >
-          SOS
-        </Button>
-      </View>
+      <Button
+        mode="contained"
+        onPress={() => setShowLoadsModal(true)}
+        style={styles.nearbyButton}
+        labelStyle={styles.nearbyButtonLabel}
+      >
+        Nearby Loads Posts
+      </Button>
+
+      {/* Bottom Up Modal */}
+      <NearbyCustomerLoadsModal
+        setShowLoadsModal={setShowLoadsModal}
+        showLoadsModal={showLoadsModal}
+      />
     </SafeAreaView>
   );
 };
@@ -110,5 +113,15 @@ const styles = StyleSheet.create({
   button: {
     width: 150,
     borderRadius: 50,
+  },
+  nearbyButton: {
+    margin: 16,
+    borderRadius: 8,
+    backgroundColor: '#2196F3',
+  },
+  nearbyButtonLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    paddingVertical: 6,
   },
 });

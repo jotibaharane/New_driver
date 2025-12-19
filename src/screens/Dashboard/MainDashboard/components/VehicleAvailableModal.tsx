@@ -18,7 +18,10 @@ import {
   Text,
 } from 'react-native-paper';
 
-import { getCoordinateDetails } from '@api/endpoints/avilable.api';
+import {
+  avialbleVehicle,
+  getCoordinateDetails,
+} from '@api/endpoints/avilable.api';
 import {
   useGetDistrictQuery,
   useGetStateQuery,
@@ -26,8 +29,11 @@ import {
 } from '@api/hooks_api';
 import Dropdown from '@components/common/Dropdown';
 import Input from '@components/common/Input';
+import Loader from '@components/common/Loader';
 import { RootState } from '@store/index';
-import { useSelector } from 'react-redux';
+import { setOnlineStatus } from '@store/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { transformLocationToOrigin } from '../helper';
 import { DateTimePickerModal } from './DateTimePickerModal';
 
 interface VehicleAvailableModalProps {
@@ -39,6 +45,8 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
   showVehicleMakeModal,
   closeVehicleMakeModal,
 }) => {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [state, setState] = useState('');
   const [district, setDistrict] = useState('');
@@ -53,44 +61,41 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
 
   const handleVehicleMakeSubmit = async (values: any) => {
     try {
+      setLoading(true);
       const apiResponse = await getCoordinateDetails({
         LATITUDE: driverLocation?.latitude || 0,
         LONGITUDE: driverLocation?.longitude || 0,
       });
+      const origin = await transformLocationToOrigin({
+        apiResponse,
+        latitude: driverLocation?.latitude,
+        longitude: driverLocation?.longitude,
+      });
+      const transRoute = values?.routes?.map((i: any) => {
+        return {
+          state: i?.state,
+          region: i?.district,
+          districts: i?.divisions,
+        };
+      });
 
-      const data = apiResponse?.data;
-      const resp = data?.results?.[0] ?? data?.response ?? data;
-      const componentsArray: any[] = resp?.address_components ?? [];
-
-      const findComponent = (types: string[]) => {
-        const found = componentsArray.find(c =>
-          c?.types?.some((t: string) => types.includes(t)),
-        );
-        return found?.long_name ?? '';
-      };
-
-      const origin = {
-        address: resp?.formatted_address ?? '',
-        coordinates: {
-          lat: driverLocation?.latitude,
-          lng: driverLocation?.longitude,
-        },
-        components: {
-          place: findComponent(['sublocality_level_1']),
-          dist: findComponent(['administrative_area_level_3']),
-          tal: findComponent(['locality']),
-          state: findComponent(['administrative_area_level_1']),
-          pincode: findComponent(['postal_code']),
-        },
-      };
-
-      console.log({ origin });
-      return origin;
-    } catch (e) {}
+      const response = await avialbleVehicle({
+        ...values,
+        origin,
+        routes: transRoute,
+      });
+      if (response?.status === '00') {
+        dispatch(setOnlineStatus(true));
+      }
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Portal>
+      <Loader visible={loading} />
       <Modal
         visible={showVehicleMakeModal}
         onDismiss={closeVehicleMakeModal}
@@ -112,13 +117,14 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
                 vendorid: driverDetails?.VehicleID,
                 origin: {},
                 routes: [],
-                vehicleType: driverDetails?.VehicleType,
+                vehicleType: driverDetails?.vehicleType,
                 vehicleNumber: driverDetails?.registration_no,
                 reportingTime: '',
                 vehicleStatus: 'Empty',
                 driverMobile: driverDetails?.MobileNo,
               }}
               onSubmit={handleVehicleMakeSubmit}
+              enableReinitialize
             >
               {({ handleSubmit, setFieldValue, values, handleChange }) => (
                 <ScrollView
