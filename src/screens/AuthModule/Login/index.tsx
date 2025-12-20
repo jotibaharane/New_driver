@@ -1,11 +1,11 @@
-import SafeContainer from '@components/layout/SafeContainer';
+import { FooterSection } from '@components/AuthModule/Login/FooterSection';
+import { HeaderSection } from '@components/AuthModule/Login/HeaderSection';
+import { LogoSection } from '@components/AuthModule/Login/LogoSection';
+import { PhoneInputSection } from '@components/AuthModule/Login/PhoneInputSection';
+import SafeContainer from '@components/Layout/SafeContainer';
 import { COLORS } from '@config/theme';
 import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import { FooterSection } from './components/FooterSection';
-import { HeaderSection } from './components/HeaderSection';
-import { LogoSection } from './components/LogoSection';
-import { PhoneInputSection } from './components/PhoneInputSection';
 import { styles } from './style';
 
 const MobileNumberScreen = () => {

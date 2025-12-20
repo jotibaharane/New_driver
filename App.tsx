@@ -1,3 +1,4 @@
+import { RootNavigator } from '@navigation/index';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Appearance, StatusBar, useColorScheme } from 'react-native';
@@ -6,7 +7,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { Provider } from 'react-redux';
 import ErrorBoundary from './src/components/ErrorBoundary';
-import RootNavigator from './src/navigation/RootNavigator';
 import { store } from './src/store';
 
 const App = () => {

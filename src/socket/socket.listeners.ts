@@ -1,5 +1,5 @@
 import { store } from '@store/index';
-import { setTripStatus } from '@store/slices/authSlice';
+import { setDriverLpList } from '@store/slices/driverLp.slice';
 import { SOCKET_EVENTS } from './socket.events';
 import { getSocket } from './socket.service';
 
@@ -11,6 +11,10 @@ export const registerSocketListeners = () => {
   const socket = getSocket();
   socket.on(SOCKET_EVENTS.DRIVER_LP_STATUS, status => {
     console.log('🟢 Driver LP Status:', status);
-    store.dispatch(setTripStatus(status?.Driver_LPStatus));
+    // store.dispatch(setTripStatus(status?.Driver_LPStatus));
+  });
+  socket.on(SOCKET_EVENTS.NEARBY_CUSTOMER_LOAD, status => {
+    console.log('🟢 Driver Customer:', status);
+    store.dispatch(setDriverLpList(status?.nearestCustomerpost?.data));
   });
 };

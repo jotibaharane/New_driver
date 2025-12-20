@@ -38,3 +38,10 @@ export interface driverOnlineOfflineRequest {
   VendorID: string;
   Status: 'Online' | 'Offline';
 }
+
+export interface CustomerPostRequest {
+  CustomerPostID: string;
+  VerificationCode: string;
+  CustomerID: string;
+  DriverID: string;
+}

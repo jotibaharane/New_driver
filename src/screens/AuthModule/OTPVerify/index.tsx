@@ -1,12 +1,13 @@
-import SafeContainer from '@components/layout/SafeContainer';
+import SafeContainer from '@components/Layout/SafeContainer';
 import { COLORS } from '@config/theme';
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import { FooterSection } from './components/FooterSection';
-import { HeaderSection } from './components/HeaderSection';
-import { LogoSection } from './components/LogoSection';
-import OtpScreen from './components/OtpInputSection';
+
+import { FooterSection } from '@components/AuthModule/OTPVerify/FooterSection';
+import { HeaderSection } from '@components/AuthModule/OTPVerify/HeaderSection';
+import { LogoSection } from '@components/AuthModule/OTPVerify/LogoSection';
+import OtpScreen from '@components/AuthModule/OTPVerify/OtpInputSection';
 import { styles } from './style';
 
 const OTPVerify = () => {

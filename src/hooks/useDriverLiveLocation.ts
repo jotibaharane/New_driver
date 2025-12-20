@@ -8,7 +8,7 @@ import { transformLocationToPayload } from '@services/location/locationPayload.s
 import { canEmitLocation } from '@services/locationEmitter.service';
 import { emitDriverLocation } from '@socket/socket.emitters';
 import { setdriverLocation } from '@store/slices/mapSlice';
-import { getBearing } from '@utils/geo/getBearing';
+import { getBearing } from '@utils/index';
 
 const ICON_FIX = 180;
 
@@ -71,10 +71,10 @@ export const useDriverLiveLocation = ({
           latitude,
           longitude,
           speed,
-          status: 'Online',
+          status: isOnline ? 'Online' : 'Offline',
           tripStatus,
         });
-
+        console.log({ payload });
         emitDriverLocation(payload);
       },
       console.log,

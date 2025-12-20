@@ -14,13 +14,6 @@ export const useNetwork = () => {
       setIsConnected(state.isConnected);
       setIsInternetReachable(state.isInternetReachable);
       setConnectionType(state.type);
-
-      console.log('🌐 Network State:', {
-        isConnected: state.isConnected,
-        isInternetReachable: state.isInternetReachable,
-        type: state.type,
-        details: state.details,
-      });
     });
 
     // Get initial state
