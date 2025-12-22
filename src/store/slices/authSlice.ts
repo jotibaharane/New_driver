@@ -1,18 +1,28 @@
-import { DriverDetails } from '@api/types/auth.types';
+import { DriverDetails } from '@api/rest/auth/auth.types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+export enum TRIP_STATUS {
+  Inactive = 'Inactive',
+  Progress = 'Progress',
+  Pending = 'Pending',
+  Accept = 'Accept',
+  Reached = 'Reached',
+  Loading = 'Loading',
+  Loaded = 'Loaded',
+}
 
 interface AuthState {
   driverDetails: null | DriverDetails;
   isOnline: boolean;
   isLoggedIn: boolean;
-  tripStatus: 'Inactive' | 'Process' | 'Pending';
+  tripStatus: TRIP_STATUS;
 }
 
 const initialState: AuthState = {
   isLoggedIn: false,
   driverDetails: null,
   isOnline: false,
-  tripStatus: 'Inactive',
+  tripStatus: TRIP_STATUS.Inactive,
 };
 
 const authSlice = createSlice({
@@ -33,10 +43,7 @@ const authSlice = createSlice({
     setOnlineStatus(state, action: PayloadAction<boolean>) {
       state.isOnline = action.payload;
     },
-    setTripStatus(
-      state,
-      action: PayloadAction<'Inactive' | 'Process' | 'Pending'>,
-    ) {
+    setTripStatus(state, action: PayloadAction<TRIP_STATUS>) {
       state.tripStatus = action.payload;
     },
   },

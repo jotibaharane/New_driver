@@ -1,9 +1,15 @@
 import Loader from '@components/Common/ui/Loader';
+import DropMarker from '@components/Map/markers/DropMarker';
+import OriginMarker from '@components/Map/markers/OriginMarker';
+import Parcel from '@components/Map/markers/parcel';
 import Truck from '@components/Map/markers/Truck';
+import { ENV } from '@config/env';
 import { RootState } from '@store/index';
+import { TRIP_STATUS } from '@store/slices/authSlice';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 import { Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -13,32 +19,69 @@ import LoadingStatusModal from './LoadingStatusModal';
 import NearbyCustomerLoadsModal from './NearbyCustomerLoadsModal';
 import OTPModal from './OTPModal';
 import TripConfirmationModal from './TripConfirmationModal';
+import TripDetailsModal from './TripDetailsModal';
 
 const SecondScreen: FC = () => {
+  const { tripStatus } = useSelector((state: RootState) => state.auth);
+  const { list, active } = useSelector((s: RootState) => s.driverLp);
+  console.log({ tripStatus });
   const mapRef = useRef<MapView>(null);
   const { driverLocation } = useSelector((s: RootState) => s.map);
   const [showLoadsModal, setShowLoadsModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showLoadingStatus, setShowLoadingStatus] = useState(false);
+  const [showTripDetails, setShowTripDetails] = useState(false);
   // AUTO FIT MAP TO DRIVER LOCATION
   useEffect(() => {
-    if (driverLocation && mapRef.current) {
+    if (!mapRef.current) return;
+
+    const coordinates: { latitude: number; longitude: number }[] = [];
+
+    // Driver location
+    if (driverLocation?.latitude && driverLocation?.longitude) {
+      coordinates.push({
+        latitude: driverLocation.latitude,
+        longitude: driverLocation.longitude,
+      });
+    }
+
+    // Load origins
+    if (list?.length) {
+      list.forEach(item => {
+        if (item?.Origin_Lat && item?.Origin_Lng) {
+          coordinates.push({
+            latitude: item.Origin_Lat,
+            longitude: item.Origin_Lng,
+          });
+        }
+      });
+    }
+
+    // Fit map only if we have at least one coordinate
+    if (coordinates.length === 1) {
+      // Single marker → normal zoom
       mapRef.current.animateCamera(
         {
-          center: {
-            latitude: driverLocation.latitude,
-            longitude: driverLocation.longitude,
-          },
+          center: coordinates[0],
           zoom: 15,
-          heading: 0,
-          pitch: 0,
         },
         { duration: 800 },
       );
+    } else if (coordinates.length > 1) {
+      // Multiple markers → fit all
+      mapRef.current.fitToCoordinates(coordinates, {
+        edgePadding: {
+          top: 80,
+          right: 80,
+          bottom: 200,
+          left: 80,
+        },
+        animated: true,
+      });
     }
-  }, [driverLocation]);
-
+  }, [driverLocation, list, tripStatus]);
+  console.log({ active });
   return (
     <SafeAreaView style={styles.container}>
       <Loader visible={false} />
@@ -72,35 +115,158 @@ const SecondScreen: FC = () => {
               <Truck height={50} width={50} />
             </Marker>
           )}
+          {tripStatus === TRIP_STATUS.Pending &&
+            list?.map(item => (
+              <Marker
+                coordinate={{
+                  latitude: item?.Origin_Lat,
+                  longitude: item?.Origin_Lng,
+                }}
+                anchor={{ x: 0.5, y: 0.5 }}
+                flat
+                tracksViewChanges={false}
+                key={item?.Customer_LoadPostID}
+              >
+                <Parcel height={50} width={50} />
+              </Marker>
+            ))}
+          {tripStatus === TRIP_STATUS.Progress && (
+            <>
+              <Marker
+                coordinate={{
+                  latitude: active?.Origin_Lat!,
+                  longitude: active?.Origin_Lng!,
+                }}
+                anchor={{ x: 0.5, y: 0.5 }}
+                flat
+                tracksViewChanges={false}
+              >
+                <OriginMarker size={30} />
+              </Marker>
+              <MapViewDirections
+                origin={{
+                  latitude: driverLocation?.latitude!,
+                  longitude: driverLocation?.longitude!,
+                }}
+                destination={{
+                  latitude: active?.Origin_Lat!,
+                  longitude: active?.Origin_Lng!,
+                }}
+                apikey={ENV.MAP_API_KEY}
+                strokeWidth={5}
+                strokeColor="hotpink"
+              />
+            </>
+          )}
+
+          {tripStatus !== TRIP_STATUS.Pending &&
+            tripStatus !== TRIP_STATUS.Progress && (
+              <>
+                <Marker
+                  coordinate={{
+                    latitude: active?.Origin_Lat!,
+                    longitude: active?.Origin_Lng!,
+                  }}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                  flat
+                  tracksViewChanges={false}
+                >
+                  <OriginMarker size={30} />
+                </Marker>
+                <Marker
+                  coordinate={{
+                    latitude: active?.Destination_Lat!,
+                    longitude: active?.Destination_Lng!,
+                  }}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                  flat
+                  tracksViewChanges={false}
+                >
+                  <DropMarker size={20} />
+                </Marker>
+                <MapViewDirections
+                  origin={{
+                    latitude: active?.Origin_Lat!,
+                    longitude: active?.Origin_Lng!,
+                  }}
+                  destination={{
+                    latitude: active?.Destination_Lat!,
+                    longitude: active?.Destination_Lng!,
+                  }}
+                  apikey={ENV.MAP_API_KEY}
+                  strokeWidth={5}
+                  strokeColor="hotpink"
+                />
+              </>
+            )}
         </MapView>
       </View>
 
-      <Button
-        mode="contained"
-        onPress={() => setShowLoadsModal(true)}
-        style={styles.nearbyButton}
-        labelStyle={styles.nearbyButtonLabel}
-      >
-        Nearby Loads
-      </Button>
-
-      {/* <View style={{ flexDirection: 'row' }}>
-        <Button
-          mode="contained"
-          onPress={() => setShowOtpModal(true)}
-          style={{ margin: 10, flex: 1 }}
-        >
-          Confirm Otp
-        </Button>
+      {tripStatus === TRIP_STATUS.Pending && (
         <Button
           mode="contained"
           onPress={() => setShowLoadsModal(true)}
-          style={{ margin: 10, flex: 1 }}
+          style={styles.nearbyButton}
+          labelStyle={styles.nearbyButtonLabel}
         >
-          Trip Details
+          Nearby Loads
         </Button>
-      </View> */}
+      )}
 
+      {tripStatus === TRIP_STATUS.Progress && (
+        <View style={{ flexDirection: 'row' }}>
+          <Button
+            mode="contained"
+            onPress={() => setShowOtpModal(true)}
+            style={{ margin: 10, flex: 1 }}
+          >
+            Confirm Otp
+          </Button>
+          <Button
+            mode="contained"
+            onPress={() => setShowTripDetails(true)}
+            style={{ margin: 10, flex: 1 }}
+          >
+            Trip Details
+          </Button>
+        </View>
+      )}
+      {tripStatus === TRIP_STATUS.Reached && (
+        <View style={{ flexDirection: 'row' }}>
+          <Button
+            mode="contained"
+            onPress={() => setShowConfirmationModal(true)}
+            style={{ margin: 10, flex: 1 }}
+          >
+            Trip Confirmation
+          </Button>
+          <Button
+            mode="contained"
+            onPress={() => setShowTripDetails(true)}
+            style={{ margin: 10, flex: 1 }}
+          >
+            Trip Details
+          </Button>
+        </View>
+      )}
+      {tripStatus === TRIP_STATUS.Loading && (
+        <View style={{ flexDirection: 'row' }}>
+          <Button
+            mode="contained"
+            onPress={() => setShowLoadingStatus(true)}
+            style={{ margin: 10, flex: 1 }}
+          >
+            Loading Status
+          </Button>
+          <Button
+            mode="contained"
+            onPress={() => setShowTripDetails(true)}
+            style={{ margin: 10, flex: 1 }}
+          >
+            Trip Details
+          </Button>
+        </View>
+      )}
       {/* Near Customer Load Modal */}
       <NearbyCustomerLoadsModal
         setShowLoadsModal={setShowLoadsModal}
@@ -120,6 +286,12 @@ const SecondScreen: FC = () => {
       <LoadingStatusModal
         visible={showLoadingStatus}
         setVisible={setShowLoadingStatus}
+      />
+
+      {/* trip details Modal */}
+      <TripDetailsModal
+        setVisible={setShowTripDetails}
+        visible={showTripDetails}
       />
     </SafeAreaView>
   );

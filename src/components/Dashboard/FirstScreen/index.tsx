@@ -24,8 +24,6 @@ export default function FirstScreen() {
   const { isOnline, driverDetails } = useSelector(
     (state: RootState) => state.auth,
   );
-  const { driverLocation } = useSelector((s: RootState) => s.map);
-  console.log({ driverLocation });
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showVehicleMakeModal, setShowVehicleMakeModal] = useState(false);
   const [isSubmittingVehicle, setIsSubmittingVehicle] = useState(false);
@@ -38,16 +36,20 @@ export default function FirstScreen() {
 
   const handleDriverOnlineOffline = async () => {
     try {
+      setIsSubmittingVehicle(true);
       const resp = await driverOnlineOffline({
         DriverID: driverDetails?.DriverID || '',
         Status: !isOnline ? 'Online' : 'Offline',
         VendorID: driverDetails?.VendorID || '',
       });
-      console.log({ resp });
+
       if (resp?.status === '00') {
         dispatch(setOnlineStatus(!isOnline));
       }
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      setIsSubmittingVehicle(false);
+    }
   };
 
   return (

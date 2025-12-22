@@ -1,3 +1,6 @@
+import { postLoadingStatusPhotos } from '@api/index';
+import { RootState } from '@store/index';
+import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
 import React, { FC, useState } from 'react';
 import {
   Alert,
@@ -12,6 +15,8 @@ import {
 } from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import { Icon } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
+import { useDispatch, useSelector } from 'react-redux';
 
 const PHOTO_GROUPS = [
   {
@@ -53,7 +58,7 @@ const PHOTO_GROUPS = [
 ];
 
 interface GroupPhoto {
-  [key: string]: string | null;
+  [key: string]: string | null; // Base64 image
 }
 
 interface LoadingStatusModalProps {
@@ -65,6 +70,9 @@ const LoadingStatusModal: FC<LoadingStatusModalProps> = ({
   visible,
   setVisible,
 }) => {
+  const dispatch = useDispatch();
+  const { active } = useSelector((s: RootState) => s.driverLp);
+
   const [groupPhotos, setGroupPhotos] = useState<GroupPhoto>({
     truckFrontView: null,
     emptyDhala: null,
@@ -77,15 +85,17 @@ const LoadingStatusModal: FC<LoadingStatusModalProps> = ({
   const takenCount = Object.values(groupPhotos).filter(Boolean).length;
   const allRequiredTaken = takenCount === PHOTO_GROUPS.length;
 
+  // 📸 CAMERA WITH BASE64
   const openCameraForGroup = (groupKey: string) => {
     launchCamera(
       {
         mediaType: 'photo',
         cameraType: 'back',
-        saveToPhotos: true,
-        quality: 0.8,
+        quality: 0.7,
         maxWidth: 1200,
         maxHeight: 1200,
+        includeBase64: true, // ✅ REQUIRED
+        saveToPhotos: false,
       },
       response => {
         if (response.didCancel) return;
@@ -95,33 +105,55 @@ const LoadingStatusModal: FC<LoadingStatusModalProps> = ({
           return;
         }
 
-        const uri = response.assets?.[0]?.uri;
-        if (uri) {
-          setGroupPhotos(prev => ({
-            ...prev,
-            [groupKey]: uri,
-          }));
-        }
+        const asset = response.assets?.[0];
+        if (!asset?.base64 || !asset.type) return;
+
+        // ✅ Backend-safe base64
+        const base64Image = `data:${asset.type};base64,${asset.base64}`;
+
+        setGroupPhotos(prev => ({
+          ...prev,
+          [groupKey]: base64Image,
+        }));
       },
     );
   };
 
-  const handleConfirmAllPhotos = () => {
+  // 🚀 SUBMIT TO API
+  const handleConfirmAllPhotos = async () => {
     if (!allRequiredTaken) {
-      Alert.alert(
-        'Incomplete',
-        'Please take all required photos before confirming.',
-      );
+      Alert.alert('Incomplete', 'Please take all required photos.');
       return;
     }
 
-    console.log('📸 All Photos:', groupPhotos);
+    try {
+      console.log({ groupPhotos });
+      const response = await postLoadingStatusPhotos({
+        CustomerPostID: active?.CustomerPostID!,
+        DriverID: active?.DriverID!,
+        CustomerID: active?.CustomerID!,
 
-    setVisible(false);
-    Alert.alert(
-      'Success',
-      'All loading photos submitted successfully. You can start the trip.',
-    );
+        truckFrontView: groupPhotos.truckFrontView!,
+        emptyDhala: groupPhotos.emptyDhala!,
+        goodsLoadingStart: groupPhotos.goodsLoadingStart!,
+        goodsLoadingHalf: groupPhotos.goodsLoadingHalf!,
+        goodsLoadingComplete: groupPhotos.goodsLoadingComplete!,
+        loadedCovered: groupPhotos.loadedCovered!,
+      });
+
+      if (response?.status === '00') {
+        dispatch(setTripStatus(TRIP_STATUS.Loaded));
+        setVisible(false);
+      } else {
+        Toast.show({ type: 'error', text1: response?.message });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Upload Failed',
+        text2: 'Please try again',
+      });
+    }
   };
 
   return (
@@ -133,7 +165,7 @@ const LoadingStatusModal: FC<LoadingStatusModalProps> = ({
     >
       <View style={styles.modalOverlay}>
         <View style={styles.statusModal}>
-          {/* Header */}
+          {/* HEADER */}
           <View style={styles.modalHeader}>
             <Text style={styles.modalHeaderTitle}>Loading Status Photos</Text>
             <TouchableOpacity onPress={() => setVisible(false)}>
@@ -142,20 +174,10 @@ const LoadingStatusModal: FC<LoadingStatusModalProps> = ({
           </View>
 
           <View style={styles.statusContent}>
-            {/* Instruction */}
-            <View style={styles.instructionContainer}>
-              <Icon source="camera" size={24} color="#3B82F6" />
-              <Text style={styles.statusInstruction}>
-                Please capture all 6 photos of the loading process.
-              </Text>
-            </View>
-
-            {/* Progress */}
             <Text style={styles.progressText}>
               Progress: {takenCount} / {PHOTO_GROUPS.length}
             </Text>
 
-            {/* Photo Groups */}
             <ScrollView showsVerticalScrollIndicator={false}>
               {PHOTO_GROUPS.map(group => (
                 <TouchableOpacity
@@ -171,7 +193,7 @@ const LoadingStatusModal: FC<LoadingStatusModalProps> = ({
                       />
                     ) : (
                       <View style={styles.placeholderThumbnail}>
-                        <Icon source="camera" size={30} color="#9CA3AF" />
+                        <Icon source="camera" size={28} color="#9CA3AF" />
                       </View>
                     )}
 
@@ -186,7 +208,6 @@ const LoadingStatusModal: FC<LoadingStatusModalProps> = ({
               ))}
             </ScrollView>
 
-            {/* Confirm Button */}
             <TouchableOpacity
               style={[
                 styles.confirmAllButton,
@@ -194,8 +215,8 @@ const LoadingStatusModal: FC<LoadingStatusModalProps> = ({
                   ? styles.confirmAllButtonActive
                   : styles.confirmAllButtonDisabled,
               ]}
-              onPress={handleConfirmAllPhotos}
               disabled={!allRequiredTaken}
+              onPress={handleConfirmAllPhotos}
             >
               <Icon source="check-circle" size={24} color="#FFF" />
               <Text style={styles.confirmAllButtonText}>

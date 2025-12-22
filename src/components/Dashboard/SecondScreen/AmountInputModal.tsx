@@ -1,4 +1,7 @@
 import { postCustomerLoadAccept } from '@api/index';
+import { RootState } from '@store/index';
+import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
+import { setActiveDriverLp } from '@store/slices/driverLp.slice';
 import React, { FC, useState } from 'react';
 import {
   Keyboard,
@@ -13,52 +16,51 @@ import {
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface AmountInputModalProps {
   visible: boolean;
   setVisible: any;
-  LoadPostID: string;
   submitAmountModal: any;
-  DriverID: string;
-  CustomerID: string;
+  temp: {
+    CustomerID: string;
+    DriverID: string;
+    CustomerPostID: string;
+  };
 }
 
 const AmountInputModal: FC<AmountInputModalProps> = ({
   visible = false,
   setVisible,
-  LoadPostID,
   submitAmountModal,
-  CustomerID,
-  DriverID,
+  temp,
 }) => {
+  const { active } = useSelector((s: RootState) => s.driverLp);
+  console.log({ active });
+  const dispatch = useDispatch();
   const [proposedAmount, setProposedAmount] = useState('');
   const submitAmount = async () => {
-    if (!LoadPostID || !proposedAmount) return;
+    if (!proposedAmount) return;
 
     try {
       const response = await postCustomerLoadAccept({
-        CustomerPostID: LoadPostID,
-        DriverID: DriverID,
-        CustomerID: CustomerID,
+        CustomerPostID: temp?.CustomerPostID,
+        DriverID: temp?.DriverID,
+        CustomerID: temp?.CustomerID,
         DriverStatus: 'Accepted',
         ProposedAmount: proposedAmount,
       });
-      console.log({ response });
-      if (response && response?.status === '02') {
+      if (response && response?.status === '00') {
         const tripData = response?.data[0];
-        console.log({ tripData });
+        dispatch(setActiveDriverLp(tripData));
         setProposedAmount('');
         submitAmountModal();
+        dispatch(setTripStatus(TRIP_STATUS.Progress));
       } else {
         Toast.show({ type: 'error', text1: response?.message });
       }
     } catch (error) {
       console.error('API Error:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Failed to accept load',
-        text2: 'Please try again',
-      });
     }
   };
   return (
@@ -76,20 +78,27 @@ const AmountInputModal: FC<AmountInputModalProps> = ({
           <View style={styles.amountModalContent}>
             <Text style={styles.amountModalTitle}> Amount</Text>
             <Text style={styles.amountModalSubtitle}>
-              For Load #{LoadPostID}
+              For Load #{active?.CustomerPostID}
             </Text>
 
-            <View style={styles.amountInputContainer}>
-              <Text style={styles.currencySymbol}>₹</Text>
-              <TextInput
-                style={styles.amountInput}
-                placeholder="Enter amount"
-                keyboardType="numeric"
-                value={proposedAmount}
-                onChangeText={setProposedAmount}
-                autoFocus={true}
-              />
-            </View>
+            <TextInput
+              mode="outlined"
+              style={{ marginBottom: 10 }}
+              placeholder="Enter amount"
+              keyboardType="numeric"
+              value={proposedAmount}
+              onChangeText={setProposedAmount}
+              left={
+                <TextInput.Affix
+                  textStyle={{
+                    fontSize: 18,
+                    fontWeight: '600',
+                    color: '#2c3e50',
+                  }}
+                  text="₹"
+                />
+              }
+            />
 
             <View style={styles.amountModalButtons}>
               <TouchableOpacity

@@ -2,6 +2,7 @@ import apiClient from '@api/client/axios.client';
 import {
   CustomerPostRequest,
   driverOnlineOfflineRequest,
+  LoadVerificationImages,
   PostDriverPayload,
 } from './driver.types';
 
@@ -21,3 +22,6 @@ export const postCustomerOtpVerify = (payload: CustomerPostRequest) =>
 
 export const postCustomerLoadAccept = (payload: any) =>
   apiClient.post('/Customer_PostStatus', payload).then(r => r.data);
+
+export const postLoadingStatusPhotos = (payload: LoadVerificationImages) =>
+  apiClient.post('/loading_Image', payload).then(r => r.data);

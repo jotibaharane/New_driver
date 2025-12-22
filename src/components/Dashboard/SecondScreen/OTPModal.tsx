@@ -1,4 +1,6 @@
+import { postCustomerLoadAccept } from '@api/index';
 import { RootState } from '@store/index';
+import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
 import React, { FC, useRef, useState } from 'react';
 import {
   Alert,
@@ -9,7 +11,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { Icon } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface OTPModalProps {
   visible: boolean;
@@ -17,6 +21,8 @@ interface OTPModalProps {
 }
 
 const OTPModal: FC<OTPModalProps> = ({ visible = false, setVisible }) => {
+  const { active } = useSelector((s: RootState) => s.driverLp);
+  const dispatch = useDispatch();
   const { driverDetails } = useSelector((state: RootState) => state.auth);
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputs = useRef<Array<TextInput | null>>([]);
@@ -31,27 +37,29 @@ const OTPModal: FC<OTPModalProps> = ({ visible = false, setVisible }) => {
   };
 
   const handleVerifyOtp = async () => {
+    console.log({ otp });
     const otpValue = otp?.join('');
     if (otpValue.length !== 4) {
       Alert.alert('Enter valid 4-digit OTP');
       return;
     }
     try {
-      // const response = await postCustomerOtpVerify({
-      //   CustomerPostID: currentTrip?.LoadPostID,
-      //   VerificationCode: otpValue,
-      //   CustomerID: currentTrip?.CustomerID,
-      //   DriverID: driverDetails?.DriverID || '',
-      // });
-      // if (response?.data?.status === '00') {
-      //   setOtpModalVisible(false);
-      //   setOtp(['', '', '', '']);
-      // } else {
-      //   Alert.alert(response?.data?.message || 'OTP verification failed');
-      // }
+      const response = await postCustomerLoadAccept({
+        CustomerPostID: active?.CustomerPostID,
+        VerificationCode: otpValue,
+        // CustomerID: active?.CustomerID,
+        DriverID: driverDetails?.DriverID || '',
+        DriverStatus: 'Reached',
+      });
+      if (response?.status === '00') {
+        setVisible(false);
+        setOtp(['', '', '', '']);
+        dispatch(setTripStatus(TRIP_STATUS.Reached));
+      } else {
+        Toast.show({ type: 'error', text1: response?.data?.message });
+      }
     } catch (error) {
       console.error('OTP API Error:', error);
-      Alert.alert('Something went wrong while verifying OTP');
     }
   };
   return (
@@ -61,27 +69,25 @@ const OTPModal: FC<OTPModalProps> = ({ visible = false, setVisible }) => {
           <View style={styles.modalHeader}>
             <Text style={styles.modalHeaderTitle}>OTP Verification</Text>
           </View>
-          {/* {currentTrip && (
+          {active && (
             <View style={styles.otpTripCard}>
               <Text style={styles.otpTripTitle}>
-                Trip to {currentTrip?.Destination}
+                Trip to {active?.Destination}
               </Text>
               <View style={styles.otpTripDetails}>
                 <View style={styles.otpTripRow}>
                   <Icon source="account" size={16} color="#6B7280" />
-                  <Text style={styles.otpTripText}>
-                    {currentTrip?.CustomerName}
-                  </Text>
+                  <Text style={styles.otpTripText}>{active?.CustomerID}</Text>
                 </View>
                 <View style={styles.otpTripRow}>
                   <Icon source="map-marker" size={16} color="#6B7280" />
                   <Text style={styles.otpTripText} numberOfLines={1}>
-                    {currentTrip?.Origin}
+                    {active?.Origin}
                   </Text>
                 </View>
               </View>
             </View>
-          )} */}
+          )}
           <View style={styles.otpContainer}>
             {otp.map((digit, index) => (
               <TextInput

@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DriverLoadPost } from './driverLp.types';
+import { AcceptedLoadPostDetails, DriverLoadPost } from './driverLp.types';
 
 interface DriverLpState {
   list: DriverLoadPost[];
-  active: DriverLoadPost | null;
+  active: AcceptedLoadPostDetails | null;
   loading: boolean;
 }
 
@@ -21,7 +21,10 @@ const driverLpSlice = createSlice({
       state.list = action.payload;
     },
 
-    setActiveDriverLp(state, action: PayloadAction<DriverLoadPost | null>) {
+    setActiveDriverLp(
+      state,
+      action: PayloadAction<AcceptedLoadPostDetails | null>,
+    ) {
       state.active = action.payload;
     },
 
@@ -32,9 +35,9 @@ const driverLpSlice = createSlice({
       if (state.active) {
         state.active.DriverLat = action.payload.lat;
         state.active.DriverLng = action.payload.lng;
-        if (action.payload.lastUpdate) {
-          state.active.DriverLastUpdate = action.payload.lastUpdate;
-        }
+        // if (action.payload.lastUpdate) {
+        //   state.active.DriverLastUpdate = action.payload.lastUpdate;
+        // }
       }
     },
 

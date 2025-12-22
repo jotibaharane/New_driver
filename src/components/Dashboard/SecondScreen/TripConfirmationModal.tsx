@@ -1,13 +1,11 @@
+import { postCustomerLoadAccept } from '@api/index';
+import { RootState } from '@store/index';
+import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
 import React, { FC } from 'react';
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface TripConfirmationModalProps {
   visible: boolean;
@@ -18,14 +16,57 @@ const TripConfirmationModal: FC<TripConfirmationModalProps> = ({
   visible = false,
   setVisible,
 }) => {
+  const dispatch = useDispatch();
+  const { active } = useSelector((s: RootState) => s.driverLp);
   const handleAcceptTrip = async () => {
     setVisible(false);
-    // setPhase('status');
+    if (!active?.CustomerPostID) return;
+
+    try {
+      const response = await postCustomerLoadAccept({
+        CustomerPostID: active?.CustomerPostID,
+        DriverID: active?.DriverID,
+        // CustomerID: active?.CustomerID,
+        DriverStatus: 'Loading',
+      });
+      if (response && response?.status === '00') {
+        // const tripData = response?.data[0];
+        // console.log({ tripData });
+        dispatch(setTripStatus(TRIP_STATUS.Loading));
+      } else {
+        Toast.show({ type: 'error', text1: response?.message });
+      }
+    } catch (error) {
+      console.error('API Error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to accept load',
+        text2: 'Please try again',
+      });
+    }
   };
 
-  const handleRejectTrip = () => {
+  const handleRejectTrip = async () => {
     setVisible(false);
-    Alert.alert('Trip Rejected', 'You have rejected the trip.');
+    try {
+      const response = await postCustomerLoadAccept({
+        CustomerPostID: active?.CustomerPostID,
+        DriverID: active?.DriverID,
+        CustomerID: active?.CustomerID,
+        DriverStatus: 'Reject',
+      });
+      if (response && response?.status === '02') {
+      } else {
+        Toast.show({ type: 'error', text1: response?.message });
+      }
+    } catch (error) {
+      console.error('API Error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to accept load',
+        text2: 'Please try again',
+      });
+    }
   };
 
   return (

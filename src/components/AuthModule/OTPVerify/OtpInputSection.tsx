@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 
 import { login, verifyOTP } from '@api/index';
 import { loginSuccess } from '@store/slices/authSlice';
+import { setActiveDriverLp } from '@store/slices/driverLp.slice';
 import { formatPhone } from '@utils/formatter';
 import { isOTPValid } from '@utils/index';
 import SmsRetriever from 'react-native-sms-retriever';
@@ -117,6 +118,7 @@ const OtpScreen: React.FC<OtpScreenProps> = ({ phoneNumber }) => {
 
     if (resp?.status === '00') {
       dispatch(loginSuccess(resp?.Driver_Details as any));
+      dispatch(setActiveDriverLp(resp?.Driver_Details?.LP_Details?.[0] as any));
     } else {
       setOtp(['', '', '', '']);
       Toast.show({ type: 'error', text1: resp?.message });

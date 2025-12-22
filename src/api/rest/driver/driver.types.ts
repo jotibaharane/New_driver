@@ -45,3 +45,18 @@ export interface CustomerPostRequest {
   CustomerID: string;
   DriverID: string;
 }
+
+export type Base64Image = string;
+
+export interface LoadVerificationImages {
+  CustomerPostID: string;
+  CustomerID: string;
+  DriverID: string;
+
+  truckFrontView: Base64Image;
+  emptyDhala: Base64Image;
+  goodsLoadingStart: Base64Image;
+  goodsLoadingHalf: Base64Image;
+  goodsLoadingComplete: Base64Image;
+  loadedCovered: Base64Image;
+}

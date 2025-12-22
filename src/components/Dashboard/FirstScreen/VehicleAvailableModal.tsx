@@ -29,7 +29,7 @@ import Dropdown from '@components/Common/ui/Dropdown';
 import Input from '@components/Common/ui/Input';
 import Loader from '@components/Common/ui/Loader';
 import { RootState } from '@store/index';
-import { setTripStatus } from '@store/slices/authSlice';
+import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
 import { transformLocationToOrigin } from '@utils/geo/location.transformer';
 import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
@@ -84,7 +84,7 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
         routes: transRoute,
       });
       if (response?.status === '00') {
-        dispatch(setTripStatus('Pending'));
+        dispatch(setTripStatus(TRIP_STATUS.Pending));
         closeVehicleMakeModal();
       } else {
         Toast.show({ type: 'error', text1: response?.data?.message });
@@ -166,7 +166,7 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
                         setRegion([]);
                       }}
                     />
-
+                    <View style={{ height: 10 }} />
                     <Dropdown
                       data={districtData?.data || []}
                       value={district}
@@ -177,7 +177,7 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
                         setRegion([]);
                       }}
                     />
-
+                    <View style={{ height: 10 }} />
                     <Dropdown
                       data={regionData?.data || []}
                       value={region}
@@ -186,7 +186,7 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
                       placeholder="Select Division(s)"
                       onChange={(v: any) => setRegion(v)}
                     />
-
+                    <View style={{ height: 10 }} />
                     <Button
                       mode="contained"
                       icon="plus"

@@ -1,3 +1,4 @@
+import { postCustomerLoadAccept } from '@api/index';
 import EmptyState from '@components/Common/feedback/EmptyState';
 import { RootState } from '@store/index';
 import { DriverLoadPost } from '@store/slices/driverLp.types';
@@ -11,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useSelector } from 'react-redux';
 import AmountInputModal from './AmountInputModal';
 import CustomerLoadCard from './CustomerLoadCard';
@@ -27,11 +29,35 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
 }) => {
   const [amountModalVisible, setAmountModalVisible] = useState(false);
   const { list } = useSelector((s: RootState) => s.driverLp);
-  const [selectedPost, setSelectedPost] = useState<DriverLoadPost | null>(null);
-  console.log({ list });
-  const handleAccept = (post: any) => {
-    setSelectedPost(post);
+  const [temp, setTemp] = useState({
+    CustomerID: '',
+    DriverID: '',
+    CustomerPostID: '',
+  });
+
+  const handleAccept = (post: DriverLoadPost) => {
+    setTemp({
+      CustomerID: post?.CustomerID,
+      DriverID: post?.DriverID,
+      CustomerPostID: post?.Customer_LoadPostID,
+    });
     setAmountModalVisible(true);
+  };
+  const handleHold = async (item: DriverLoadPost) => {
+    try {
+      const response = await postCustomerLoadAccept({
+        CustomerPostID: item?.Customer_LoadPostID,
+        DriverID: item?.DriverID,
+        CustomerID: item?.CustomerID,
+        DriverStatus: 'HOLD',
+        ProposedAmount: 0,
+      });
+      if (response?.status === '00') {
+        setShowLoadsModal(false);
+      } else {
+        Toast.show({ type: 'error', text1: response?.message });
+      }
+    } catch (error) {}
   };
 
   return (
@@ -63,7 +89,11 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
           <FlatList
             data={list || []}
             renderItem={({ item }) => (
-              <CustomerLoadCard item={item} handleAccept={handleAccept} />
+              <CustomerLoadCard
+                item={item}
+                handleAccept={handleAccept}
+                handleHold={handleHold}
+              />
             )}
             keyExtractor={item => item.Customer_LoadPostID}
             contentContainerStyle={styles.listContent}
@@ -75,13 +105,11 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
       <AmountInputModal
         visible={amountModalVisible}
         setVisible={setAmountModalVisible}
-        LoadPostID={selectedPost?.Customer_LoadPostID!}
         submitAmountModal={() => {
           setAmountModalVisible(false);
           setShowLoadsModal(false);
         }}
-        CustomerID={selectedPost?.CustomerID!}
-        DriverID={selectedPost?.DriverID!}
+        temp={temp}
       />
     </Modal>
   );

@@ -7,11 +7,13 @@ import { formatDistance } from './helper';
 interface CustomerLoadCardProps {
   item: DriverLoadPost;
   handleAccept: any;
+  handleHold: any;
 }
 
 const CustomerLoadCard: FC<CustomerLoadCardProps> = ({
   item,
   handleAccept,
+  handleHold,
 }) => {
   return (
     <View style={styles.postCard}>
@@ -178,7 +180,7 @@ const CustomerLoadCard: FC<CustomerLoadCardProps> = ({
       <View style={styles.actionButtonContainer}>
         <TouchableOpacity
           style={styles.holdButton}
-          // onPress={() => handleHold(post)}
+          onPress={() => handleHold(item)}
         >
           <Icon source="clock-outline" size={16} color="#f39c12" />
           <Text style={styles.holdButtonText}>Hold</Text>

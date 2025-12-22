@@ -3,6 +3,7 @@ import SecondScreen from '@components/Dashboard/SecondScreen';
 import { useDriverLiveLocation } from '@hooks/useDriverLiveLocation';
 import { useIsFocused } from '@react-navigation/native';
 import { RootState } from '@store/index';
+import { TRIP_STATUS } from '@store/slices/authSlice';
 import { useSelector } from 'react-redux';
 
 const MainDashboard = () => {
@@ -19,7 +20,11 @@ const MainDashboard = () => {
     tripStatus,
   });
 
-  return tripStatus === 'Inactive' ? <FirstScreen /> : <SecondScreen />;
+  return tripStatus === TRIP_STATUS.Inactive ? (
+    <FirstScreen />
+  ) : (
+    <SecondScreen />
+  );
 };
 
 export default MainDashboard;
