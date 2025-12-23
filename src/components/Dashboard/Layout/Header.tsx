@@ -9,11 +9,13 @@ import { styles } from '../FirstScreen/style';
 interface HeaderProps {
   unreadCount: any;
   setShowNotificationsModal: any;
+  setDrawerVisible: any;
 }
 
 const Header: FC<HeaderProps> = ({
   unreadCount,
   setShowNotificationsModal,
+  setDrawerVisible,
 }) => {
   const { driverDetails } = useSelector((state: RootState) => state.auth);
   return (
@@ -25,6 +27,7 @@ const Header: FC<HeaderProps> = ({
             iconColor="white"
             size={28}
             style={styles.drawerButton}
+            onPress={() => setDrawerVisible((prev: any) => !prev)}
           />
           <View style={styles.driverInfo}>
             <View style={styles.driverDetails}>

@@ -39,6 +39,7 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.driverDetails = null;
       state.isOnline = false;
+      state.tripStatus = TRIP_STATUS.Inactive;
     },
     setOnlineStatus(state, action: PayloadAction<boolean>) {
       state.isOnline = action.payload;

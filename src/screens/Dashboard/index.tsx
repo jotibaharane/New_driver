@@ -1,4 +1,5 @@
 import FirstScreen from '@components/Dashboard/FirstScreen';
+import Layout from '@components/Dashboard/Layout';
 import SecondScreen from '@components/Dashboard/SecondScreen';
 import { useDriverLiveLocation } from '@hooks/useDriverLiveLocation';
 import { useIsFocused } from '@react-navigation/native';
@@ -20,10 +21,10 @@ const MainDashboard = () => {
     tripStatus,
   });
 
-  return tripStatus === TRIP_STATUS.Inactive ? (
-    <FirstScreen />
-  ) : (
-    <SecondScreen />
+  return (
+    <Layout>
+      {tripStatus === TRIP_STATUS.Inactive ? <FirstScreen /> : <SecondScreen />}
+    </Layout>
   );
 };
 

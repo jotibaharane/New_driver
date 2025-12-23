@@ -1,8 +1,8 @@
 import Loader from '@components/Common/ui/Loader';
 import DropMarker from '@components/Map/markers/DropMarker';
 import OriginMarker from '@components/Map/markers/OriginMarker';
-import Parcel from '@components/Map/markers/parcel';
 import Truck from '@components/Map/markers/Truck';
+import Parcel from '@components/Map/markers/parcel';
 import { ENV } from '@config/env';
 import { RootState } from '@store/index';
 import { TRIP_STATUS } from '@store/slices/authSlice';
@@ -11,20 +11,16 @@ import { StyleSheet, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { Button } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import Header from '../FirstScreen/Header';
-import { INDIA_REGION, MAP_STYLE } from './helper';
 import LoadingStatusModal from './LoadingStatusModal';
 import NearbyCustomerLoadsModal from './NearbyCustomerLoadsModal';
 import OTPModal from './OTPModal';
 import TripConfirmationModal from './TripConfirmationModal';
 import TripDetailsModal from './TripDetailsModal';
-
+import { INDIA_REGION, MAP_STYLE } from './helper';
 const SecondScreen: FC = () => {
   const { tripStatus } = useSelector((state: RootState) => state.auth);
   const { list, active } = useSelector((s: RootState) => s.driverLp);
-  console.log({ tripStatus });
   const mapRef = useRef<MapView>(null);
   const { driverLocation } = useSelector((s: RootState) => s.map);
   const [showLoadsModal, setShowLoadsModal] = useState(false);
@@ -81,12 +77,9 @@ const SecondScreen: FC = () => {
       });
     }
   }, [driverLocation, list, tripStatus]);
-  console.log({ active });
   return (
-    <SafeAreaView style={styles.container}>
+    <>
       <Loader visible={false} />
-
-      <Header setShowNotificationsModal={() => {}} unreadCount={0} />
 
       <View style={{ flex: 1, position: 'relative' }}>
         <MapView
@@ -293,7 +286,7 @@ const SecondScreen: FC = () => {
         setVisible={setShowTripDetails}
         visible={showTripDetails}
       />
-    </SafeAreaView>
+    </>
   );
 };
 

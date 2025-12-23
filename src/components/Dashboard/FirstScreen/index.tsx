@@ -6,33 +6,25 @@ import { setOnlineStatus } from '@store/slices/authSlice';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Card, Switch, Text } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionButton } from './ActionButton';
-import Header from './Header';
-import NotificationsModal from './NotificationsModal';
 import VehicleAvailableModal from './VehicleAvailableModal';
-import { notificationsData, quickActions } from './helper';
+import { quickActions } from './helper';
 import { styles } from './style';
-import { Notification } from './types';
 
 // ==================== MAIN DASHBOARD ====================
 export default function FirstScreen() {
   const dispatch = useDispatch();
-  const [notifications, setNotifications] =
-    useState<Notification[]>(notificationsData);
+
   const { isOnline, driverDetails } = useSelector(
     (state: RootState) => state.auth,
   );
-  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showVehicleMakeModal, setShowVehicleMakeModal] = useState(false);
   const [isSubmittingVehicle, setIsSubmittingVehicle] = useState(false);
 
   const closeVehicleMakeModal = () => {
     setShowVehicleMakeModal(false);
   };
-
-  const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleDriverOnlineOffline = async () => {
     try {
@@ -53,14 +45,8 @@ export default function FirstScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <>
       <Loader visible={isSubmittingVehicle} />
-
-      {/* Header */}
-      <Header
-        setShowNotificationsModal={setShowNotificationsModal}
-        unreadCount={unreadCount}
-      />
 
       {/* Main Content - Non-scrollable */}
       <View style={styles.content}>
@@ -149,18 +135,11 @@ export default function FirstScreen() {
         </View>
       </View>
 
-      {/* Notifications Modal */}
-      <NotificationsModal
-        notifications={notifications}
-        setNotifications={setNotifications}
-        setShowNotificationsModal={setShowNotificationsModal}
-        showNotificationsModal={showNotificationsModal}
-      />
       {/* Vehicle Make Modal */}
       <VehicleAvailableModal
         closeVehicleMakeModal={closeVehicleMakeModal}
         showVehicleMakeModal={showVehicleMakeModal}
       />
-    </SafeAreaView>
+    </>
   );
 }
