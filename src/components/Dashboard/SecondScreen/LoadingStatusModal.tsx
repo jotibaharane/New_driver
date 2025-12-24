@@ -5,7 +5,7 @@ import {
   resetLoadingPhotos,
   setLoadingPhoto,
 } from '@store/slices/loadingPhotosSlice';
-import { compressImageToMax30KB } from '@utils/img/image.compress';
+import { compressImageTo5KB } from '@utils/img/image.compress';
 import React, { FC } from 'react';
 import {
   Alert,
@@ -56,7 +56,7 @@ const LoadingStatusModal: FC<Props> = ({ visible, setVisible }) => {
       },
       async res => {
         if (!res.didCancel && !res.errorCode && res.assets?.[0]) {
-          const compressedResult = await compressImageToMax30KB(res.assets[0]);
+          const compressedResult = await compressImageTo5KB(res.assets[0]);
           console.log({ compressedResult });
           if (compressedResult.base64) {
             dispatch(

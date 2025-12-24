@@ -54,6 +54,24 @@ const SecondScreen: FC = () => {
       });
     }
 
+    if (
+      tripStatus !== TRIP_STATUS.Pending &&
+      tripStatus !== TRIP_STATUS.Progress &&
+      active?.Origin_Lat &&
+      active?.Origin_Lng &&
+      active?.Destination_Lat &&
+      active?.Destination_Lng
+    ) {
+      coordinates.push({
+        latitude: active.Origin_Lat,
+        longitude: active.Origin_Lng,
+      });
+      coordinates.push({
+        latitude: active.Destination_Lat,
+        longitude: active.Destination_Lng,
+      });
+    }
+
     // Fit map only if we have at least one coordinate
     if (coordinates.length === 1) {
       // Single marker → normal zoom
@@ -260,11 +278,32 @@ const SecondScreen: FC = () => {
           </Button>
         </View>
       )}
+
+      {/* <WaitingCard /> */}
+
+      {/* <View style={{ flexDirection: 'row' }}>
+        <Button
+          mode="contained"
+          onPress={() => setShowLoadingStatus(true)}
+          style={{ margin: 10, flex: 1 }}
+        >
+          LR
+        </Button>
+        <Button
+          mode="contained"
+          onPress={() => setShowTripDetails(true)}
+          style={{ margin: 10, flex: 1 }}
+        >
+          Trip Sheet
+        </Button>
+      </View> */}
       {/* Near Customer Load Modal */}
       <NearbyCustomerLoadsModal
         setShowLoadsModal={setShowLoadsModal}
         showLoadsModal={showLoadsModal}
       />
+
+      {/* <LoadReciptScreen visible={true} setVisible={() => {}} /> */}
 
       {/* Customer Otp Modal */}
       <OTPModal visible={showOtpModal} setVisible={setShowOtpModal} />

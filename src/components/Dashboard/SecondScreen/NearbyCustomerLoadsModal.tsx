@@ -49,8 +49,7 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
         CustomerPostID: item?.Customer_LoadPostID,
         DriverID: item?.DriverID,
         CustomerID: item?.CustomerID,
-        DriverStatus: 'HOLD',
-        ProposedAmount: 0,
+        DriverStatus: 'Hold',
       });
       if (response?.status === '00') {
         setShowLoadsModal(false);
