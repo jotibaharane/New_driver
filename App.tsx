@@ -1,5 +1,4 @@
 import { RootNavigator } from '@navigation/index';
-import Geolocation from '@react-native-community/geolocation';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Appearance, StatusBar, useColorScheme } from 'react-native';
@@ -10,13 +9,6 @@ import { Provider } from 'react-redux';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import { store } from './src/store';
 
-// Add this early in your app (App.js or similar)
-Geolocation.setRNConfiguration({
-  authorizationLevel: 'always',
-  enableBackgroundLocationUpdates: true,
-  locationProvider: 'auto',
-  skipPermissionRequests: false,
-});
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
   // Initialize app

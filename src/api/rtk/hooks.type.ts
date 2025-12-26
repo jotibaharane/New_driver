@@ -124,10 +124,10 @@ export interface LocationItem {
   VehicleType: string;
   Origin: string;
   Destination: string;
-  Origin_Lat: number;
-  Origin_Lng: number;
-  Destination_Lat: number;
-  Destination_Lng: number;
+  PickupLat: number;
+  PickupLng: number;
+  DeliveryLat: number;
+  DeliveryLng: number;
   DistanceInKm: number;
 }
 

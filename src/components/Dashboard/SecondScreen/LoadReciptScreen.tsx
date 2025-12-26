@@ -1,179 +1,350 @@
 import React, { FC } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import {
   BarcodeCreatorView,
   BarcodeFormat,
 } from 'react-native-barcode-creator';
 import { Button, Card, Divider, Modal, Text } from 'react-native-paper';
-// import Barcode from 'react-native-barcode-builder';
-interface LoadReciptScreenProps {
-  visible: boolean;
-  setVisible: any;
+
+const { width } = Dimensions.get('window');
+
+/* ================= TYPES ================= */
+
+interface AddressInfo {
+  name: string;
+  address1: string;
+  address2: string;
+  city: string;
+  pin: string;
+  state: string;
+  mobile: string;
+  email: string;
+  gst?: string;
 }
-const LoadReciptScreen: FC<LoadReciptScreenProps> = ({
+
+interface LRData {
+  bookingDate: string;
+  awbNumber: string;
+  pieceCount: number;
+  customerOrderNo: string;
+  shipTo: AddressInfo;
+  pickupFrom: AddressInfo;
+}
+
+interface LoadReceiptScreenProps {
+  visible: boolean;
+  onDismiss: () => void;
+  data?: Partial<LRData>;
+  onPrint?: () => void;
+}
+
+/* ================= DEFAULT DATA ================= */
+
+const defaultData: LRData = {
+  bookingDate: '23/12/2025',
+  awbNumber: '303',
+  pieceCount: 1,
+  customerOrderNo: '9835',
+  shipTo: {
+    name: 'TEST2',
+    address1: 'THANE',
+    address2: 'AROLI',
+    city: 'TEST',
+    pin: '400078',
+    state: 'MAHARASHTRA',
+    mobile: '9696919070',
+    email: 'ali123@gmail.com',
+  },
+  pickupFrom: {
+    name: 'TEST1',
+    address1: 'VASI',
+    address2: 'VIRAR',
+    city: 'BOMBAY',
+    pin: '400078',
+    state: 'MAHARASHTRA',
+    mobile: '—',
+    email: 'vishal@gmail.com',
+    gst: '1',
+  },
+};
+
+/* ================= COMPONENT ================= */
+
+const LoadReceiptScreen: FC<LoadReceiptScreenProps> = ({
   visible,
-  setVisible,
+  onDismiss,
+  data = {},
+  onPrint,
 }) => {
+  const mergedData = { ...defaultData, ...data };
+
+  /* ============ ADDRESS COLUMN ================= */
+
+  const AddressColumn: FC<{
+    title: string;
+    data: AddressInfo;
+    isPickup?: boolean;
+  }> = ({ title, data, isPickup }) => {
+    const showMobile = data.mobile !== '—' && data.mobile.trim() !== '';
+
+    return (
+      <View style={styles.addressCardWrapper}>
+        {/* Header Strip */}
+        <View style={styles.addressHeader}>
+          <Text style={styles.addressHeaderText}>{title}</Text>
+        </View>
+
+        {/* Card Body */}
+        <View style={styles.addressCardBody}>
+          <Row label="Name" value={data.name} />
+          <Row label="Address" value={data.address1} />
+          <Row label="" value={data.address2} />
+          <Row
+            label="City"
+            value={`${data.city}, ${data.state} - ${data.pin}`}
+          />
+          <Row label="📱" value={showMobile ? data.mobile : '—'} />
+          <Row label="✉️" value={data.email} />
+          {isPickup ? <Row label="GST" value={data.gst ?? '—'} /> : null}
+        </View>
+      </View>
+    );
+  };
+
   return (
     <Modal
       visible={visible}
-      onDismiss={() => setVisible(false)}
+      onDismiss={onDismiss}
       contentContainerStyle={styles.modalContainer}
     >
-      <ScrollView>
-        <Card style={styles.card}>
-          {/* Header */}
-          <View style={styles.headerRow}>
-            <View>
-              <Text style={styles.logoText}>3PL</Text>
-              <Text style={styles.subLogo}>MANAGEMENT INDIA PVT. LTD.</Text>
-            </View>
-            <Image
-              source={{ uri: 'https://via.placeholder.com/80' }}
-              style={styles.image}
-            />
+      <Card style={styles.card}>
+        {/* HEADER */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.logoText}>3PL</Text>
+            <Text style={styles.companyName}>MANAGEMENT INDIA PVT. LTD.</Text>
+            <Text style={styles.companyTag}>Logistics Partner</Text>
           </View>
 
-          <Divider />
-
-          {/* Booking Info */}
-          <View style={styles.section}>
-            <Text>Booking Date# : 23/12/2025</Text>
-            <Text>3PL AWB NO # : 303</Text>
-            <Text>NO of Pcs # : 1</Text>
+          <View style={styles.awbSection}>
+            <Info label="AWB No" value={mergedData.awbNumber} />
+            <Info label="Date" value={mergedData.bookingDate} />
+            <Info label="Pcs" value={mergedData.pieceCount.toString()} />
           </View>
+        </View>
 
-          {/* Barcode */}
-          <View style={styles.barcodeBox}>
-            <BarcodeCreatorView
-              format={BarcodeFormat.CODE128}
-              value="303"
-              background={'#FFFFFF'}
-              foregroundColor={'#000000'}
-              style={{}}
-            />
-            <Text style={styles.barcodeText}>303</Text>
-          </View>
+        <Divider />
 
-          <Divider />
+        {/* BARCODE */}
+        <View style={styles.barcodeSection}>
+          <BarcodeCreatorView
+            format={BarcodeFormat.CODE128}
+            value={mergedData.awbNumber}
+            background="#FFFFFF"
+            foregroundColor="#1e3a8a"
+            style={styles.barcode}
+          />
+          <Text style={styles.barcodeText}>AWB: {mergedData.awbNumber}</Text>
+        </View>
 
-          {/* Ship To */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Ship To :</Text>
-            <Text>Name : TEST2</Text>
-            <Text>Address-1 : THANE</Text>
-            <Text>Address-2 : AROLI</Text>
-            <Text>City : TEST</Text>
-            <Text>Pin : 400078</Text>
-            <Text>State : MAHARASHTRA</Text>
-            <Text>Mobile No : 9696919070</Text>
-            <Text>Email : ali123@gmail.com</Text>
-          </View>
+        <Divider />
 
-          <Divider />
+        {/* ADDRESSES VERTICALLY */}
+        <View style={styles.addressesContainer}>
+          <AddressColumn title="Ship To" data={mergedData.shipTo} />
+          <AddressColumn
+            title="Pickup From"
+            data={mergedData.pickupFrom}
+            isPickup
+          />
+        </View>
 
-          {/* Pickup Address */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Pickup Address :</Text>
-            <Text>Name : TEST1</Text>
-            <Text>Address-1 : VASI</Text>
-            <Text>Address-2 : VIRAR</Text>
-            <Text>City : BOMBAY</Text>
-            <Text>Pin : 400078</Text>
-            <Text>State : MAHARASHTRA</Text>
-            <Text>Mobile No : —</Text>
-            <Text>Email : vishal@gmail.com</Text>
-            <Text>GST : 1</Text>
-          </View>
+        <Divider />
 
-          <Divider />
+        {/* FOOTER */}
+        <View style={styles.footerSection}>
+          <Text style={styles.orderNumber}>
+            Customer Order: {mergedData.customerOrderNo}
+          </Text>
 
-          {/* Order Barcode */}
-          <View style={styles.barcodeBox}>
-            <Text>Customer Order NO # : 9835</Text>
-            <BarcodeCreatorView
-              format={BarcodeFormat.CODE128}
-              value="9835"
-              background={'#FFFFFF'}
-              foregroundColor={'#000000'}
-              style={{}}
-            />
-          </View>
-        </Card>
-      </ScrollView>
+          <BarcodeCreatorView
+            format={BarcodeFormat.CODE128}
+            value={mergedData.customerOrderNo}
+            background="#FFFFFF"
+            foregroundColor="#059669"
+            style={styles.smallBarcode}
+          />
+        </View>
+      </Card>
 
-      {/* Bottom Action Buttons */}
-      <View style={styles.actionRow}>
-        <Button mode="outlined" onPress={() => setVisible(false)}>
+      {/* ACTIONS */}
+      <View style={styles.actionBar}>
+        <Button mode="outlined" onPress={onDismiss} style={styles.actionButton}>
           Close
         </Button>
+        <Button mode="contained" onPress={onPrint} style={styles.printButton}>
+          Print LR
+        </Button>
         <Button
-          mode="contained"
-          onPress={() => {
-            // integrate react-native-print
-          }}
+          mode="contained-tonal"
+          onPress={onDismiss}
+          style={styles.actionButton}
         >
-          Print
+          Save PDF
         </Button>
       </View>
     </Modal>
   );
 };
 
-export default LoadReciptScreen;
+/* ================= REUSABLE ================= */
+
+const Row = ({ label, value }: { label: string; value: string }) => (
+  <View style={styles.addressRow}>
+    <Text style={styles.addressLabel}>{label}</Text>
+    <Text style={styles.addressValue}>{value}</Text>
+  </View>
+);
+
+const Info = ({ label, value }: { label: string; value: string }) => (
+  <View style={styles.awbRow}>
+    <Text style={styles.awbLabel}>{label}:</Text>
+    <Text style={styles.awbValue}>{value}</Text>
+  </View>
+);
+
+/* ================= STYLES ================= */
+
 const styles = StyleSheet.create({
   modalContainer: {
-    backgroundColor: '#f4f4f4',
-    marginTop: '20%',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    paddingBottom: 10,
-    maxHeight: '90%',
+    backgroundColor: '#f8fafc',
+    margin: 10,
+    borderRadius: 12,
   },
   card: {
-    margin: 10,
-    padding: 10,
-    backgroundColor: '#fff',
+    padding: 14,
+    borderRadius: 12,
   },
-  headerRow: {
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   logoText: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '700',
     color: '#1e3a8a',
   },
-  subLogo: {
-    fontSize: 12,
+  companyName: {
+    fontSize: 10,
     color: '#b91c1c',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
-  image: {
-    width: 80,
-    height: 50,
-    resizeMode: 'contain',
+  companyTag: {
+    fontSize: 9,
+    color: '#6b7280',
   },
-  section: {
-    marginVertical: 8,
+  awbSection: {
+    alignItems: 'flex-end',
   },
-  sectionTitle: {
-    fontWeight: 'bold',
-    marginBottom: 4,
+  awbRow: {
+    flexDirection: 'row',
+    marginBottom: 2,
   },
-  barcodeBox: {
+  awbLabel: {
+    fontSize: 10,
+    color: '#6b7280',
+    marginRight: 4,
+  },
+  awbValue: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  barcodeSection: {
     alignItems: 'center',
-    marginVertical: 10,
+    paddingVertical: 8,
+  },
+  barcode: {
+    width: width * 0.6,
+    height: 48,
   },
   barcodeText: {
+    fontSize: 11,
     marginTop: 4,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
-  actionRow: {
+  addressesContainer: {
+    flexDirection: 'column',
+    marginTop: 10,
+    gap: 14,
+  },
+  addressCardWrapper: {
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  addressHeader: {
+    backgroundColor: '#1e3a8a',
+    paddingVertical: 6,
+    alignItems: 'flex-start',
+    paddingLeft: 10,
+  },
+  addressHeaderText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  addressCardBody: {
+    padding: 10,
+  },
+  addressRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 12,
-    gap: 10,
+    marginBottom: 6,
+    flexWrap: 'wrap',
+  },
+  addressLabel: {
+    width: 60,
+    fontSize: 10,
+    color: '#6b7280',
+  },
+  addressValue: {
+    flex: 1,
+    fontSize: 10,
+    color: '#111827',
+  },
+  footerSection: {
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  orderNumber: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
+  smallBarcode: {
+    width: width * 0.45,
+    height: 36,
+  },
+  actionBar: {
+    flexDirection: 'row',
+    gap: 8,
+    padding: 10,
+    borderTopWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  actionButton: {
+    flex: 1,
+  },
+  printButton: {
+    flex: 1,
+    backgroundColor: '#1e3a8a',
   },
 });
+
+export default LoadReceiptScreen;

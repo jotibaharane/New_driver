@@ -22,11 +22,11 @@ export interface DriverLoadPost {
 
   PostDate: string;
   PickupLocation: string;
-  Origin_Lat: number;
-  Origin_Lng: number;
+  PickupLat: number;
+  PickupLng: number;
 
-  Destination_Lat: number;
-  Destination_Lng: number;
+  DeliveryLat: number;
+  DeliveryLng: number;
   PickupDistanceKm: number;
   DestinationLocation: string;
   DestinationDistanceKm: number;
@@ -73,16 +73,16 @@ export interface AcceptedLoadPostDetails {
   Approximate_weight: string;
   PickupType: string;
 
-  Origin_Lat: number;
-  Origin_Lng: number;
+  PickupLat: number;
+  PickupLng: number;
   Origin_City: string;
   Origin_District: string;
   Origin_Taluka: string;
   Origin_State: string;
   Origin_Pincode: string;
 
-  Destination_Lat: number;
-  Destination_Lng: number;
+  DeliveryLat: number;
+  DeliveryLng: number;
   Destination_City: string;
   Destination_District: string;
   Destination_Taluka: string;

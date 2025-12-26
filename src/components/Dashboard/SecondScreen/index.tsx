@@ -17,6 +17,7 @@ import NearbyCustomerLoadsModal from './NearbyCustomerLoadsModal';
 import OTPModal from './OTPModal';
 import TripConfirmationModal from './TripConfirmationModal';
 import TripDetailsModal from './TripDetailsModal';
+import WaitingCard from './WaitingCard';
 import { INDIA_REGION, MAP_STYLE } from './helper';
 const SecondScreen: FC = () => {
   const { tripStatus } = useSelector((state: RootState) => state.auth);
@@ -45,10 +46,10 @@ const SecondScreen: FC = () => {
     // Load origins
     if (list?.length) {
       list.forEach(item => {
-        if (item?.Origin_Lat && item?.Origin_Lng) {
+        if (item?.PickupLat && item?.PickupLng) {
           coordinates.push({
-            latitude: item.Origin_Lat,
-            longitude: item.Origin_Lng,
+            latitude: item.PickupLat,
+            longitude: item.PickupLng,
           });
         }
       });
@@ -57,18 +58,18 @@ const SecondScreen: FC = () => {
     if (
       tripStatus !== TRIP_STATUS.Pending &&
       tripStatus !== TRIP_STATUS.Progress &&
-      active?.Origin_Lat &&
-      active?.Origin_Lng &&
-      active?.Destination_Lat &&
-      active?.Destination_Lng
+      active?.PickupLat &&
+      active?.PickupLng &&
+      active?.DeliveryLat &&
+      active?.DeliveryLng
     ) {
       coordinates.push({
-        latitude: active.Origin_Lat,
-        longitude: active.Origin_Lng,
+        latitude: active.PickupLat,
+        longitude: active.PickupLng,
       });
       coordinates.push({
-        latitude: active.Destination_Lat,
-        longitude: active.Destination_Lng,
+        latitude: active.DeliveryLat,
+        longitude: active.DeliveryLng,
       });
     }
 
@@ -115,7 +116,7 @@ const SecondScreen: FC = () => {
           maxZoomLevel={18}
           minZoomLevel={4}
         >
-          {driverLocation && (
+          {driverLocation?.latitude && (
             <Marker
               coordinate={driverLocation}
               anchor={{ x: 0.5, y: 0.5 }}
@@ -130,8 +131,8 @@ const SecondScreen: FC = () => {
             list?.map(item => (
               <Marker
                 coordinate={{
-                  latitude: item?.Origin_Lat,
-                  longitude: item?.Origin_Lng,
+                  latitude: item?.PickupLat || 0,
+                  longitude: item?.PickupLng || 0,
                 }}
                 anchor={{ x: 0.5, y: 0.5 }}
                 flat
@@ -145,8 +146,8 @@ const SecondScreen: FC = () => {
             <>
               <Marker
                 coordinate={{
-                  latitude: active?.Origin_Lat!,
-                  longitude: active?.Origin_Lng!,
+                  latitude: active?.PickupLat!,
+                  longitude: active?.PickupLng!,
                 }}
                 anchor={{ x: 0.5, y: 0.5 }}
                 flat
@@ -160,8 +161,8 @@ const SecondScreen: FC = () => {
                   longitude: driverLocation?.longitude!,
                 }}
                 destination={{
-                  latitude: active?.Origin_Lat!,
-                  longitude: active?.Origin_Lng!,
+                  latitude: active?.PickupLat!,
+                  longitude: active?.PickupLng!,
                 }}
                 apikey={ENV.MAP_API_KEY}
                 strokeWidth={5}
@@ -175,8 +176,8 @@ const SecondScreen: FC = () => {
               <>
                 <Marker
                   coordinate={{
-                    latitude: active?.Origin_Lat!,
-                    longitude: active?.Origin_Lng!,
+                    latitude: active?.PickupLat!,
+                    longitude: active?.PickupLng!,
                   }}
                   anchor={{ x: 0.5, y: 0.5 }}
                   flat
@@ -186,8 +187,8 @@ const SecondScreen: FC = () => {
                 </Marker>
                 <Marker
                   coordinate={{
-                    latitude: active?.Destination_Lat!,
-                    longitude: active?.Destination_Lng!,
+                    latitude: active?.DeliveryLat!,
+                    longitude: active?.DeliveryLng!,
                   }}
                   anchor={{ x: 0.5, y: 0.5 }}
                   flat
@@ -197,12 +198,12 @@ const SecondScreen: FC = () => {
                 </Marker>
                 <MapViewDirections
                   origin={{
-                    latitude: active?.Origin_Lat!,
-                    longitude: active?.Origin_Lng!,
+                    latitude: active?.PickupLat!,
+                    longitude: active?.PickupLng!,
                   }}
                   destination={{
-                    latitude: active?.Destination_Lat!,
-                    longitude: active?.Destination_Lng!,
+                    latitude: active?.DeliveryLat!,
+                    longitude: active?.DeliveryLng!,
                   }}
                   apikey={ENV.MAP_API_KEY}
                   strokeWidth={5}
@@ -279,7 +280,10 @@ const SecondScreen: FC = () => {
         </View>
       )}
 
-      {/* <WaitingCard /> */}
+      {tripStatus !== TRIP_STATUS.Loading &&
+        tripStatus !== TRIP_STATUS.Pending &&
+        tripStatus !== TRIP_STATUS.Progress &&
+        tripStatus !== TRIP_STATUS.Reached && <WaitingCard />}
 
       {/* <View style={{ flexDirection: 'row' }}>
         <Button
@@ -302,7 +306,7 @@ const SecondScreen: FC = () => {
         setShowLoadsModal={setShowLoadsModal}
         showLoadsModal={showLoadsModal}
       />
-
+      {/* <TripSheetModal visible={true} onDismiss={() => {}} /> */}
       {/* <LoadReciptScreen visible={true} setVisible={() => {}} /> */}
 
       {/* Customer Otp Modal */}
