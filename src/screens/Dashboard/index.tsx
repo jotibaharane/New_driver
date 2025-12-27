@@ -5,13 +5,13 @@ import { useDriverLiveLocation } from '@hooks/useDriverLiveLocation';
 import { useIsFocused } from '@react-navigation/native';
 import { RootState } from '@store/index';
 import { TRIP_STATUS } from '@store/slices/authSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const MainDashboard = () => {
   const { driverDetails, isOnline, tripStatus } = useSelector(
     (state: RootState) => state.auth,
   );
-
+  const dispatch = useDispatch();
   const isFocus = useIsFocused();
 
   useDriverLiveLocation({
