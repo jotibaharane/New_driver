@@ -118,7 +118,7 @@ const SecondScreen: FC = () => {
         >
           {driverLocation?.latitude && (
             <Marker
-              coordinate={driverLocation}
+              coordinate={driverLocation || { latitude: 0, longitude: 0 }}
               anchor={{ x: 0.5, y: 0.5 }}
               flat
               tracksViewChanges={false}
@@ -146,8 +146,8 @@ const SecondScreen: FC = () => {
             <>
               <Marker
                 coordinate={{
-                  latitude: active?.PickupLat!,
-                  longitude: active?.PickupLng!,
+                  latitude: active?.PickupLat! || 0,
+                  longitude: active?.PickupLng! || 0,
                 }}
                 anchor={{ x: 0.5, y: 0.5 }}
                 flat
@@ -157,8 +157,8 @@ const SecondScreen: FC = () => {
               </Marker>
               <MapViewDirections
                 origin={{
-                  latitude: driverLocation?.latitude!,
-                  longitude: driverLocation?.longitude!,
+                  latitude: driverLocation?.latitude! || 0,
+                  longitude: driverLocation?.longitude! || 0,
                 }}
                 destination={{
                   latitude: active?.PickupLat!,
@@ -176,8 +176,8 @@ const SecondScreen: FC = () => {
               <>
                 <Marker
                   coordinate={{
-                    latitude: active?.PickupLat!,
-                    longitude: active?.PickupLng!,
+                    latitude: active?.PickupLat! || 0,
+                    longitude: active?.PickupLng! || 0,
                   }}
                   anchor={{ x: 0.5, y: 0.5 }}
                   flat
@@ -187,8 +187,8 @@ const SecondScreen: FC = () => {
                 </Marker>
                 <Marker
                   coordinate={{
-                    latitude: active?.DeliveryLat!,
-                    longitude: active?.DeliveryLng!,
+                    latitude: active?.DeliveryLat! || 0,
+                    longitude: active?.DeliveryLng! || 0,
                   }}
                   anchor={{ x: 0.5, y: 0.5 }}
                   flat
@@ -198,12 +198,12 @@ const SecondScreen: FC = () => {
                 </Marker>
                 <MapViewDirections
                   origin={{
-                    latitude: active?.PickupLat!,
-                    longitude: active?.PickupLng!,
+                    latitude: active?.PickupLat! || 0,
+                    longitude: active?.PickupLng! || 0,
                   }}
                   destination={{
-                    latitude: active?.DeliveryLat!,
-                    longitude: active?.DeliveryLng!,
+                    latitude: active?.DeliveryLat! || 0,
+                    longitude: active?.DeliveryLng! || 0,
                   }}
                   apikey={ENV.MAP_API_KEY}
                   strokeWidth={5}

@@ -99,19 +99,19 @@ const TripConfirmationModal: FC<TripConfirmationModalProps> = ({
               {currentTrip?.Destination}
             </Text> */}
             <View style={styles.confirmationButtons}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[styles.confirmationButton, styles.rejectButton]}
                 onPress={handleRejectTrip}
               >
                 <Icon source="close" size={20} color="#FFF" />
                 <Text style={styles.rejectButtonText}>Reject</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 style={[styles.confirmationButton, styles.acceptButton]}
                 onPress={handleAcceptTrip}
               >
                 <Icon source="check" size={20} color="#FFF" />
-                <Text style={styles.acceptButtonText}>Accept</Text>
+                <Text style={styles.acceptButtonText}>Approve</Text>
               </TouchableOpacity>
             </View>
           </View>
