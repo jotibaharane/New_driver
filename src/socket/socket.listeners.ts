@@ -14,6 +14,10 @@ export const registerSocketListeners = () => {
     console.log('🟢 Driver LP Status:', status);
     store.dispatch(setTripStatus(status?.driverData?.[0]?.Driver_LPStatus));
   });
+  socket.on(SOCKET_EVENTS.DRIVER_LP_FLAG, status => {
+    console.log('🟢 Driver LP Flag:', status);
+    store.dispatch(setTripStatus(status?.payload?.Driver_LPStatus));
+  });
   socket.on(SOCKET_EVENTS.NEARBY_CUSTOMER_LOAD, status => {
     console.log('🟢 Driver Customer:', status);
     store.dispatch(setDriverLpList(status?.nearestCustomerpost?.data));

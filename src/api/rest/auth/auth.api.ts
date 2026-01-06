@@ -2,8 +2,8 @@ import apiClient from '@api/client/axios.client';
 import {
   ApiResponse,
   LoginRequest,
+  OtpValidationResponse,
   ValidateOtpRequest,
-  ValidateOtpResponse,
 } from './auth.types';
 
 export const login = (payload: LoginRequest): Promise<ApiResponse> =>
@@ -11,5 +11,5 @@ export const login = (payload: LoginRequest): Promise<ApiResponse> =>
 
 export const verifyOTP = (
   payload: ValidateOtpRequest,
-): Promise<ValidateOtpResponse> =>
+): Promise<OtpValidationResponse> =>
   apiClient.post('/Driver_ValidateOtp', payload).then(r => r.data);

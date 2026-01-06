@@ -5,7 +5,7 @@ export enum TRIP_STATUS {
   Inactive = 'Inactive',
   Progress = 'Progress',
   Pending = 'Pending',
-  Accept = 'Accept',
+  Accept = 'Accepted',
   Reached = 'Reached',
   Loading = 'Loading',
   Loaded = 'Loaded',

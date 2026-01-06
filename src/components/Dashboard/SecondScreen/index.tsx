@@ -96,6 +96,7 @@ const SecondScreen: FC = () => {
       });
     }
   }, [driverLocation, list, tripStatus]);
+  console.log({ tripStatus });
   return (
     <>
       <Loader visible={false} />
@@ -137,7 +138,7 @@ const SecondScreen: FC = () => {
                 anchor={{ x: 0.5, y: 0.5 }}
                 flat
                 tracksViewChanges={false}
-                key={item?.Customer_LoadPostID}
+                key={item?.LoadPostID}
               >
                 <Parcel height={50} width={50} />
               </Marker>
@@ -307,7 +308,7 @@ const SecondScreen: FC = () => {
         showLoadsModal={showLoadsModal}
       />
       {/* <TripSheetModal visible={true} onDismiss={() => {}} /> */}
-      {/* <LoadReciptScreen visible={true} setVisible={() => {}} /> */}
+      {/* <LoadReceiptScreen visible={true} onDismiss={() => {}} /> */}
 
       {/* Customer Otp Modal */}
       <OTPModal visible={showOtpModal} setVisible={setShowOtpModal} />

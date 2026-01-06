@@ -26,8 +26,8 @@ const TripDetailsModal: FC<TripDetailsModalProps> = ({
   if (!active) return null;
 
   const onCallCustomer = () => {
-    if (active.Customer_ContactNo) {
-      Linking.openURL(`tel:${active.Customer_ContactNo}`);
+    if (active.PickupContactNumber) {
+      Linking.openURL(`tel:${active.PickupContactNumber}`);
     }
   };
 
@@ -64,14 +64,14 @@ const TripDetailsModal: FC<TripDetailsModalProps> = ({
 
               <View style={styles.routeRow}>
                 <Icon source="map-marker" size={18} color="#2563EB" />
-                <Text style={styles.routeText}>{active.Origin}</Text>
+                <Text style={styles.routeText}>{active.PickupAddress}</Text>
               </View>
 
               <View style={styles.routeDivider} />
 
               <View style={styles.routeRow}>
                 <Icon source="map-marker-check" size={18} color="#16A34A" />
-                <Text style={styles.routeText}>{active.Destination}</Text>
+                <Text style={styles.routeText}>{active.DeliveryAddress}</Text>
               </View>
             </View>
 
@@ -82,9 +82,7 @@ const TripDetailsModal: FC<TripDetailsModalProps> = ({
               <View style={styles.rowBetween}>
                 <View>
                   <Text style={styles.label}>Contact Person</Text>
-                  <Text style={styles.value}>
-                    {active.Customer_ContactPerson}
-                  </Text>
+                  <Text style={styles.value}>{active.PickupContactPerson}</Text>
                 </View>
 
                 <TouchableOpacity
@@ -97,7 +95,7 @@ const TripDetailsModal: FC<TripDetailsModalProps> = ({
               </View>
 
               <Text style={styles.metaText}>
-                📞 {active.Customer_ContactNo}
+                📞 {active.PickupContactNumber}
               </Text>
             </View>
 

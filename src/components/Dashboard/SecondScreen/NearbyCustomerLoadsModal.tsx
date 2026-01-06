@@ -39,14 +39,14 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
     setTemp({
       CustomerID: post?.CustomerID,
       DriverID: post?.DriverID,
-      CustomerPostID: post?.Customer_LoadPostID,
+      CustomerPostID: post?.LoadPostID,
     });
     setAmountModalVisible(true);
   };
   const handleHold = async (item: DriverLoadPost) => {
     try {
       const response = await postCustomerLoadAccept({
-        CustomerPostID: item?.Customer_LoadPostID,
+        CustomerPostID: item?.LoadPostID,
         DriverID: item?.DriverID,
         CustomerID: item?.CustomerID,
         DriverStatus: 'Hold',
@@ -58,7 +58,7 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
       }
     } catch (error) {}
   };
-
+  console.log({ list });
   return (
     <Modal
       visible={showLoadsModal}
@@ -94,7 +94,7 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
                 handleHold={handleHold}
               />
             )}
-            keyExtractor={item => item.Customer_LoadPostID}
+            keyExtractor={item => item.LoadPostID}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={() => <EmptyState title="Load Not Fount" />}

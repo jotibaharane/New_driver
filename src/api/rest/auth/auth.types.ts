@@ -40,6 +40,69 @@ export interface UserState {
   token?: string | boolean;
 }
 
+export interface OtpValidationResponse {
+  status: '00' | '01' | string;
+  message: string;
+  Driver_Details: DriverDetails;
+}
+
+export interface LoadPostSummary {
+  LoadPostID: string;
+  CustomerPostID: string;
+  CustomerID: string;
+  DriverID: string;
+
+  Customer_ContactPerson: string;
+  Customer_ContactNo: string;
+
+  VehicleType: string;
+  BodyType: string;
+  Weight: string;
+
+  CargoContent: string;
+  CargoPackageType: string;
+
+  CustomerStatus: 'Accepted' | 'Pending' | 'Rejected' | string;
+  DriverStatus: 'Accepted' | 'Pending' | 'Rejected' | string;
+  LP_Status: 'Pending' | 'Progress' | 'Completed' | 'Cancelled';
+
+  PostInsertDate: string; // ISO Date
+  PostUpdateDate: string; // ISO Date
+}
+
+export interface DriverDetails {
+  DriverID: string;
+  VendorID: string;
+
+  full_name: string;
+  Phone: string;
+  MobileNo: string;
+
+  VehicleID: string;
+  registration_no: string;
+  vehicleType: string;
+
+  AssignmentDate: string; // ISO Date
+  insert_date: string; // ISO Date
+
+  Status: 'Online' | 'Offline' | string;
+
+  // 📍 Location
+  Lat: number;
+  Lng: number;
+  City: string;
+  District: string;
+  Taluka: string;
+  State: string;
+  Pincode: string;
+  Address: string;
+
+  // 🚚 Load Post Status
+  Driver_LPStatus: 'Accepted' | 'Pending' | 'Rejected' | string;
+
+  LP_Details: LoadPostSummary[];
+}
+
 export interface ValidateOtpResponse extends ApiResponse {
   Driver_Details: DriverDetails;
 }

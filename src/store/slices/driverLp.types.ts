@@ -1,7 +1,5 @@
-import { TRIP_STATUS } from './authSlice';
-
 export interface DriverLoadPost {
-  Customer_LoadPostID: string;
+  LoadPostID: string;
   DriverStatus: string;
   DriverID: string;
   CustomerID: string;
@@ -47,65 +45,80 @@ export interface DriverLoadPost {
 }
 
 export interface AcceptedLoadPostDetails {
-  Customer_ContactNo: string;
-  Customer_ContactPerson: string;
-
+  // ===== IDs =====
   LoadPostID: string;
   CustomerID: string;
+  CustomerPostID: string;
+  VendorID: string | null;
+  DriverID: string | null;
 
-  Origin: string;
-  Destination: string;
+  // ===== Pickup Details =====
+  PickupContactPerson: string;
+  PickupCompanyName: string;
+  PickupContactNumber: string;
+  PickupPlotBuilding: string;
+  PickupStreetArea: string;
+  PickupAddress: string;
 
+  PickupCity: string;
+  PickupDistrict: string;
+  PickupTaluka: string;
+  PickupState: string;
+  PickupPincode: string;
+  PickupLat: number;
+  PickupLng: number;
+
+  // ===== Delivery Details =====
+  DeliveryContactPerson: string;
+  DeliveryCompanyName: string;
+  DeliveryContactNumber: string;
+  DeliveryPlotBuilding: string;
+  DeliveryStreetArea: string;
+  DeliveryAddress: string;
+
+  DeliveryCity: string;
+  DeliveryDistrict: string;
+  DeliveryTaluka: string;
+  DeliveryState: string;
+  DeliveryPincode: string;
+  DeliveryLat: number;
+  DeliveryLng: number;
+
+  // ===== Vehicle & Cargo =====
   VehicleType: string;
-  Weight: string;
-
-  verify_flag: 'Y' | 'N';
-  verification_code: string;
-
   BodyType: string;
+  cargo_type: 'Normal' | 'Hazardous' | string;
   CargoContent: string;
   CargoPackageType: string;
 
-  ExpectedAvailableTime: string; // ISO date string
-  PostInsertDate: string; // ISO date string
-  PostUpdateDate: string | null;
+  Weight: string;
+  Approximate_weight: number;
+  isVolumetric: boolean;
+  DhalaLength: number | null;
 
-  Approximate_weight: string;
-  PickupType: string;
+  // ===== Scheduling =====
+  ExpectedAvailableTime: string;
+  ScheduleDate: string | null;
+  ScheduleTime: string | null;
 
-  PickupLat: number;
-  PickupLng: number;
-  Origin_City: string;
-  Origin_District: string;
-  Origin_Taluka: string;
-  Origin_State: string;
-  Origin_Pincode: string;
-
-  DeliveryLat: number;
-  DeliveryLng: number;
-  Destination_City: string;
-  Destination_District: string;
-  Destination_Taluka: string;
-  Destination_State: string;
-  Destination_Pincode: string;
-
-  AddressInsertDate: string; // ISO date string
-  AddressUpdateDate: string | null;
-
-  CustomerPostID: string;
-  cpsCustomerID: string;
-
-  VendorID: string | null;
-  DriverID: string;
+  // ===== Status & Verification =====
+  master_status: 'Y' | 'N';
+  verification_code: string;
+  verify_flag: 'Y' | 'N';
 
   CustomerStatus: 'Pending' | 'Accepted' | 'Rejected' | string;
-  VendorStatus: string | null;
-  DriverStatus: 'Accepted' | 'Pending' | 'Rejected' | string;
-  LP_Status: TRIP_STATUS;
+  VendorStatus: 'Pending' | 'Accepted' | 'Rejected' | null;
+  DriverStatus: 'Pending' | 'Accepted' | 'Rejected' | string;
+  LP_Status: 'Pending' | 'Progress' | 'Completed' | 'Cancelled';
 
-  DriverLat: number;
-  DriverLng: number;
+  // ===== Cost =====
+  cost: number;
 
-  dllDriverID: string;
-  MobileNo: string;
+  // ===== Audit Dates =====
+  LoadPost_InsertDate: string; // ISO Date
+  LoadPost_UpdateDate: string; // ISO Date
+  Address_InsertDate: string; // ISO Date
+  Address_UpdateDate: string; // ISO Date
+  DriverLng?: any;
+  DriverLat?: any;
 }
