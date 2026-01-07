@@ -1,14 +1,5 @@
-import { postLoadingStatusPhotos } from '@api/index';
-import { RootState } from '@store/index';
-import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
+import React, { FC, useState } from 'react';
 import {
-  resetLoadingPhotos,
-  setLoadingPhoto,
-} from '@store/slices/loadingPhotosSlice';
-import { compressImageTo5KB } from '@utils/img/image.compress';
-import React, { FC } from 'react';
-import {
-  Alert,
   Image,
   Modal,
   Platform,
@@ -23,71 +14,83 @@ import { Icon } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
 
-const PHOTO_GROUPS = [
+import { postLoadingStatusPhotos } from '@api/index';
+import { RootState } from '@store/index';
+import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
+import {
+  LoadingPhotoKey,
+  resetLoadingPhotos,
+  setLoadingPhoto,
+  togglePhotoLock,
+} from '@store/slices/loadingPhotosSlice';
+import { compressImageTo5KB } from '@utils/img/image.compress';
+
+/* ---------------- CONFIG ---------------- */
+
+const PHOTO_GROUPS: { key: LoadingPhotoKey; title: string }[] = [
   { key: 'truckFrontView', title: 'Truck Front View Photo' },
   { key: 'emptyDhala', title: 'Empty Dhala Photo' },
   { key: 'goodsLoadingStart', title: 'Goods Loading (Start)' },
   { key: 'goodsLoadingHalf', title: 'Goods Loading (Half)' },
   { key: 'goodsLoadingComplete', title: 'Goods Loading (Complete)' },
   { key: 'loadedCovered', title: 'Loaded & Covered Vehicle' },
-] as const;
+];
 
 interface Props {
   visible: boolean;
   setVisible: (v: boolean) => void;
 }
 
+/* ---------------- COMPONENT ---------------- */
+
 const LoadingStatusModal: FC<Props> = ({ visible, setVisible }) => {
   const dispatch = useDispatch();
   const { active } = useSelector((s: RootState) => s.driverLp);
-  const groupPhotos = useSelector((s: RootState) => s.loadingPhotos);
-  console.log({ active });
-  const takenCount = Object.values(groupPhotos).filter(Boolean).length;
+  const photos = useSelector((s: RootState) => s.loadingPhotos);
+
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const takenCount = PHOTO_GROUPS.filter(p => !!photos[p.key]).length;
   const allTaken = takenCount === PHOTO_GROUPS.length;
 
-  const openCamera = (key: keyof typeof groupPhotos) => {
+  /* 📸 Open camera */
+  const openCamera = (key: LoadingPhotoKey) => {
+    if (photos?.locks?.[key]) {
+      Toast.show({ type: 'info', text1: 'Photo is already saved' });
+      return;
+    }
+
     launchCamera(
       {
         mediaType: 'photo',
         cameraType: 'back',
-        includeBase64: false,
         quality: 1,
         saveToPhotos: false,
       },
       async res => {
-        if (!res.didCancel && !res.errorCode && res.assets?.[0]) {
-          const compressedResult = await compressImageTo5KB(res.assets[0]);
-          console.log({ compressedResult });
-          if (compressedResult.base64) {
-            dispatch(
-              setLoadingPhoto({
-                key: key as any,
-                value: compressedResult.base64!,
-              }),
-            );
+        if (!res.didCancel && res.assets?.[0]) {
+          const compressed = await compressImageTo5KB(res.assets[0]);
+          if (compressed.base64) {
+            dispatch(setLoadingPhoto({ key, value: compressed.base64 }));
           }
         }
       },
     );
   };
 
+  /* 🚀 Submit */
   const handleSubmit = async () => {
-    if (!allTaken) {
-      Alert.alert('Incomplete', 'Please capture all photos');
-      return;
-    }
-
     try {
       const res = await postLoadingStatusPhotos({
         CustomerPostID: active?.CustomerPostID || '',
         DriverID: active?.DriverID || '',
         CustomerID: active?.CustomerID || '',
-        truckFrontView: groupPhotos.truckFrontView || '',
-        emptyDhala: groupPhotos.emptyDhala || '',
-        goodsLoadingStart: groupPhotos.goodsLoadingStart || '',
-        goodsLoadingHalf: groupPhotos.goodsLoadingHalf || '',
-        goodsLoadingComplete: groupPhotos.goodsLoadingComplete || '',
-        loadedCovered: groupPhotos.loadedCovered || '',
+        truckFrontView: photos.truckFrontView || '',
+        emptyDhala: photos.emptyDhala || '',
+        goodsLoadingStart: photos.goodsLoadingStart || '',
+        goodsLoadingHalf: photos.goodsLoadingHalf || '',
+        goodsLoadingComplete: photos.goodsLoadingComplete || '',
+        loadedCovered: photos.loadedCovered || '',
       });
 
       if (res?.status === '00') {
@@ -102,67 +105,123 @@ const LoadingStatusModal: FC<Props> = ({ visible, setVisible }) => {
     }
   };
 
+  /* ---------------- UI ---------------- */
+
   return (
-    <Modal visible={visible} transparent animationType="slide">
-      <View style={styles.overlay}>
-        <View style={styles.modal}>
-          {/* HEADER */}
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Loading Status Photos</Text>
-            <TouchableOpacity onPress={() => setVisible(false)}>
-              <Icon source="close" size={24} color="#6B7280" />
+    <>
+      <Modal visible={visible} transparent animationType="slide">
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            {/* HEADER */}
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>Loading Status Photos</Text>
+              <TouchableOpacity onPress={() => setVisible(false)}>
+                <Icon source="close" size={24} />
+              </TouchableOpacity>
+            </View>
+
+            {/* PROGRESS */}
+            <Text style={styles.progress}>
+              {takenCount}/{PHOTO_GROUPS.length} Photos Captured
+            </Text>
+
+            {/* LIST */}
+            <ScrollView>
+              {PHOTO_GROUPS.map(item => {
+                const locked = Boolean(photos?.locks?.[item.key]);
+
+                return (
+                  <TouchableOpacity
+                    key={item.key}
+                    style={[styles.card, locked && styles.cardLocked]}
+                    onPress={() => openCamera(item.key)}
+                  >
+                    {photos[item.key] ? (
+                      <TouchableOpacity
+                        onPress={() =>
+                          setPreviewImage(photos[item.key] as string)
+                        }
+                      >
+                        <Image
+                          source={{ uri: photos[item.key] as string }}
+                          style={styles.thumbnail}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <View style={styles.placeholder}>
+                        <Icon source="camera" size={26} />
+                      </View>
+                    )}
+
+                    <Text style={styles.cardText}>{item.title}</Text>
+
+                    {photos[item.key] && (
+                      <TouchableOpacity
+                        onPress={() => dispatch(togglePhotoLock(item.key))}
+                        style={[
+                          styles.saveBtn,
+                          !locked && styles.saveBtnActive,
+                          locked && styles.saveBtnLocked,
+                        ]}
+                      >
+                        <Icon
+                          source={locked ? 'check-circle' : 'content-save'}
+                          size={22}
+                          color={locked ? '#16A34A' : '#FFFFFF'}
+                        />
+                        {!locked && <Text style={styles.saveText}>SAVE</Text>}
+                      </TouchableOpacity>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* SUBMIT */}
+            <TouchableOpacity
+              disabled={!allTaken}
+              style={[styles.submitBtn, !allTaken && styles.submitDisabled]}
+              onPress={handleSubmit}
+            >
+              <Icon source="check-circle" size={22} color="#FFF" />
+              <Text style={styles.submitText}>Confirm & Submit</Text>
             </TouchableOpacity>
           </View>
-
-          {/* PROGRESS */}
-          <Text style={styles.progress}>
-            {takenCount}/{PHOTO_GROUPS.length} Photos Captured
-          </Text>
-
-          {/* LIST */}
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {PHOTO_GROUPS.map(item => (
-              <TouchableOpacity
-                key={item.key}
-                style={styles.card}
-                onPress={() => openCamera(item.key as keyof typeof groupPhotos)}
-              >
-                {groupPhotos[item.key] ? (
-                  <Image
-                    source={{ uri: groupPhotos[item.key]! }}
-                    style={styles.thumbnail}
-                  />
-                ) : (
-                  <View style={styles.placeholder}>
-                    <Icon source="camera" size={28} color="#9CA3AF" />
-                  </View>
-                )}
-
-                <Text style={styles.cardText}>{item.title}</Text>
-
-                <Icon source="chevron-right" size={24} color="#9CA3AF" />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          {/* SUBMIT */}
-          <TouchableOpacity
-            disabled={!allTaken}
-            style={[styles.submitBtn, !allTaken && styles.submitDisabled]}
-            onPress={handleSubmit}
-          >
-            <Icon source="check-circle" size={22} color="#FFF" />
-            <Text style={styles.submitText}>Confirm & Submit</Text>
-          </TouchableOpacity>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+
+      {/* 🔍 IMAGE PREVIEW */}
+      <Modal visible={!!previewImage} transparent animationType="fade">
+        <View style={styles.previewOverlay}>
+          <TouchableOpacity
+            style={styles.previewClose}
+            onPress={() => setPreviewImage(null)}
+          >
+            <Icon source="close-circle" size={36} color="#FFF" />
+          </TouchableOpacity>
+
+          <ScrollView
+            contentContainerStyle={styles.previewContainer}
+            maximumZoomScale={3}
+            minimumZoomScale={1}
+          >
+            {previewImage && (
+              <Image
+                source={{ uri: previewImage }}
+                style={styles.previewImage}
+                resizeMode="contain"
+              />
+            )}
+          </ScrollView>
+        </View>
+      </Modal>
+    </>
   );
 };
 
 export default LoadingStatusModal;
 
-/* ===================== STYLES ===================== */
+/* ---------------- STYLES ---------------- */
 
 const styles = StyleSheet.create({
   overlay: {
@@ -171,7 +230,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modal: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: '90%',
@@ -180,22 +239,18 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderColor: '#E5E7EB',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
   },
   progress: {
     textAlign: 'center',
-    marginVertical: 14,
-    fontSize: 16,
+    marginVertical: 12,
     fontWeight: '600',
-    color: '#374151',
   },
   card: {
     flexDirection: 'row',
@@ -208,11 +263,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
+  cardLocked: { opacity: 0.6 },
   placeholder: {
     width: 60,
     height: 60,
     borderRadius: 10,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#E5E7EB',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
@@ -227,14 +283,35 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '600',
-    color: '#111827',
   },
+
+  /* SAVE BUTTON */
+  saveBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+  },
+  saveBtnActive: {
+    backgroundColor: '#2563EB',
+    elevation: 4,
+  },
+  saveBtnLocked: {
+    backgroundColor: '#DCFCE7',
+  },
+  saveText: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: '700',
+    marginLeft: 6,
+  },
+
   submitBtn: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 16,
-    marginTop: 16,
+    margin: 16,
     padding: 18,
     borderRadius: 14,
     backgroundColor: '#2563EB',
@@ -244,8 +321,29 @@ const styles = StyleSheet.create({
   },
   submitText: {
     marginLeft: 8,
-    color: '#FFFFFF',
+    color: '#FFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+
+  /* PREVIEW */
+  previewOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.95)',
+  },
+  previewClose: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    zIndex: 10,
+  },
+  previewContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%',
   },
 });
