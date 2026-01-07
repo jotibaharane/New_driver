@@ -2,11 +2,7 @@ import { RootState } from '@store/index';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  disconnectSocket,
-  initSocket,
-  registerSocketListeners,
-} from '@socket/index';
+import { disconnectSocket, initSocket } from '@socket/index';
 
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
@@ -18,10 +14,7 @@ const RootNavigator = () => {
 
   useEffect(() => {
     if (!driverDetails?.DriverID) return;
-
     initSocket(driverDetails.DriverID);
-    registerSocketListeners();
-
     return () => {
       disconnectSocket();
     };

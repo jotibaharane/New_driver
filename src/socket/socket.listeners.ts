@@ -1,6 +1,3 @@
-import { store } from '@store/index';
-import { setTripStatus } from '@store/slices/authSlice';
-import { setDriverLpList } from '@store/slices/driverLp.slice';
 import { SOCKET_EVENTS } from './socket.events';
 import { getSocket } from './socket.service';
 
@@ -10,18 +7,18 @@ export const registerSocketListeners = () => {
   if (registered) return;
   registered = true;
   const socket = getSocket();
-  socket.on(SOCKET_EVENTS.DRIVER_LP_STATUS, status => {
-    console.log('🟢 Driver LP Status:', status);
-    store.dispatch(setTripStatus(status?.driverData?.[0]?.Driver_LPStatus));
+  socket.on(SOCKET_EVENTS.AVAILABLE_LOADS, status => {
+    console.log('🟢 Driver Available Loads:', status);
+    // store.dispatch(setTripStatus(status?.driverData?.[0]?.Driver_LPStatus));
   });
-  socket.on(SOCKET_EVENTS.DRIVER_LP_FLAG, status => {
-    console.log('🟢 Driver LP Flag:', status);
-    store.dispatch(setTripStatus(status?.payload?.Driver_LPStatus));
-  });
-  socket.on(SOCKET_EVENTS.NEARBY_CUSTOMER_LOAD, status => {
-    console.log('🟢 Driver Customer:', status);
-    store.dispatch(setDriverLpList(status?.nearestCustomerpost?.data));
-  });
+  // socket.on(SOCKET_EVENTS.DRIVER_LP_FLAG, status => {
+  //   console.log('🟢 Driver LP Flag:', status);
+  //   store.dispatch(setTripStatus(status?.payload?.Driver_LPStatus));
+  // });
+  // socket.on(SOCKET_EVENTS.NEARBY_CUSTOMER_LOAD, status => {
+  //   console.log('🟢 Driver Customer:', status);
+  //   store.dispatch(setDriverLpList(status?.nearestCustomerpost?.data));
+  // });
   // socket.on('driverLPFlag', status => {
   //   console.log('🟢 driverLPFlag:', status);
   //   // store.dispatch(setDriverLpList(status?.nearestCustomerpost?.data));

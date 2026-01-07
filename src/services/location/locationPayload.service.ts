@@ -1,3 +1,5 @@
+import { DriverLocationPayload } from '@socket/socket.emitters';
+
 interface TransformLocationToPayloadRequest {
   driverDetails: any;
   latitude: any;
@@ -18,7 +20,7 @@ export const transformLocationToPayload = async ({
   direction,
   tripStatus,
   status,
-}: TransformLocationToPayloadRequest): Promise<any> => {
+}: TransformLocationToPayloadRequest): Promise<DriverLocationPayload> => {
   const data = apiResponse?.data;
   const resp = data?.results?.[0] ?? data?.response ?? data;
   const componentsArray: any[] = resp?.address_components ?? [];
@@ -29,24 +31,23 @@ export const transformLocationToPayload = async ({
     );
     return found?.long_name ?? '';
   };
-  const payload = {
-    DriverID: driverDetails?.DriverID,
-    VendorID: driverDetails?.VendorID,
-    LP_ID: null,
-    VehicleID: driverDetails?.VehicleID,
-    MobileNo: driverDetails?.MobileNo,
-    Lat: latitude,
-    Lng: longitude,
-    Speed: parseFloat(speed.toFixed(2)),
-    Direction: direction?.toString(),
-    City: findComponent(['sublocality_level_1']),
-    District: findComponent(['administrative_area_level_3']),
-    Taluka: findComponent(['locality']),
-    State: findComponent(['administrative_area_level_1']),
-    Pincode: findComponent(['postal_code']),
+  const payload: DriverLocationPayload = {
     Address: resp?.formatted_address ?? '',
+    City: findComponent(['sublocality_level_1']),
+    Direction: direction?.toString(),
+    District: findComponent(['administrative_area_level_3']),
     Driver_LPStatus: tripStatus,
+    DriverID: driverDetails?.DriverID,
+    lat: latitude,
+    lng: longitude,
+    MobileNo: driverDetails?.MobileNo,
+    Pincode: findComponent(['postal_code']),
+    Speed: parseFloat(speed.toFixed(2))?.toString(),
+    State: findComponent(['administrative_area_level_1']),
     Status: status,
+    Taluka: findComponent(['locality']),
+    VehicleID: driverDetails?.VehicleID,
+    VendorID: driverDetails?.VendorID,
   };
 
   return payload;
