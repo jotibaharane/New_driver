@@ -25,9 +25,9 @@ import {
   useGetStateQuery,
   useGetTalukaQuery,
 } from '@api/index';
-import Dropdown from '@components/Common/ui/Dropdown';
-import Input from '@components/Common/ui/Input';
-import Loader from '@components/Common/ui/Loader';
+import Dropdown from '@components/common/ui/Dropdown';
+import Input from '@components/common/ui/Input';
+import Loader from '@components/common/ui/Loader';
 import { RootState } from '@store/index';
 import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
 import { transformLocationToOrigin } from '@utils/geo/location.transformer';

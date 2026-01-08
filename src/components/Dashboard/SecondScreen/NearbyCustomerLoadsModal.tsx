@@ -1,5 +1,5 @@
 import { postCustomerLoadAccept } from '@api/index';
-import EmptyState from '@components/Common/feedback/EmptyState';
+import EmptyState from '@components/common/feedback/EmptyState';
 import { RootState } from '@store/index';
 import { DriverLoadPost } from '@store/slices/driverLp.types';
 import React, { FC, useState } from 'react';
