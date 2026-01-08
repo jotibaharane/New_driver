@@ -58,7 +58,7 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
       }
     } catch (error) {}
   };
-  console.log({ list });
+
   return (
     <Modal
       visible={showLoadsModal}

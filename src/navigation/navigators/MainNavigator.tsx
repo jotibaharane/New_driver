@@ -18,8 +18,9 @@ const MainNavigator = () => {
 
   useEffect(() => {
     if (!driverDetails?.DriverID) return;
-    emitDriverJoin(driverDetails?.DriverID);
-    registerSocketListeners();
+
+    registerSocketListeners(); // 👈 pehle listener
+    emitDriverJoin(driverDetails.DriverID); // 👈 then join
   }, [driverDetails?.DriverID]);
   return (
     <Stack.Navigator

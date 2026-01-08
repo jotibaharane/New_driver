@@ -10,4 +10,5 @@ export const SOCKET_EVENTS = {
   JOIN: 'join',
   DRIVER_LOCATION: 'driver:location',
   AVAILABLE_LOADS: 'driver:available_loads',
+  AVAILABLE_OLD: 'driver:available_loads_old',
 };

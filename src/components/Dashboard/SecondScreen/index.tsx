@@ -21,7 +21,8 @@ import WaitingCard from './WaitingCard';
 import { INDIA_REGION, MAP_STYLE } from './helper';
 const SecondScreen: FC = () => {
   const { tripStatus } = useSelector((state: RootState) => state.auth);
-  const { list, active } = useSelector((s: RootState) => s.driverLp);
+  const { active } = useSelector((s: RootState) => s.driverLp);
+  const { customerLocations } = useSelector((s: RootState) => s.map);
   const mapRef = useRef<MapView>(null);
   const { driverLocation } = useSelector((s: RootState) => s.map);
   const [showLoadsModal, setShowLoadsModal] = useState(false);
@@ -44,12 +45,12 @@ const SecondScreen: FC = () => {
     }
 
     // Load origins
-    if (list?.length) {
-      list.forEach(item => {
-        if (item?.PickupLat && item?.PickupLng) {
+    if (customerLocations?.length) {
+      customerLocations.forEach(item => {
+        if (item?.latitude && item?.longitude) {
           coordinates.push({
-            latitude: item.PickupLat,
-            longitude: item.PickupLng,
+            latitude: item.latitude,
+            longitude: item.longitude,
           });
         }
       });
@@ -95,8 +96,8 @@ const SecondScreen: FC = () => {
         animated: true,
       });
     }
-  }, [driverLocation, list, tripStatus]);
-  console.log({ tripStatus });
+  }, [driverLocation, customerLocations, tripStatus]);
+
   return (
     <>
       <Loader visible={false} />
@@ -129,16 +130,16 @@ const SecondScreen: FC = () => {
             </Marker>
           )}
           {tripStatus === TRIP_STATUS.Pending &&
-            list?.map(item => (
+            customerLocations?.map((item, index) => (
               <Marker
                 coordinate={{
-                  latitude: item?.PickupLat || 0,
-                  longitude: item?.PickupLng || 0,
+                  latitude: item?.latitude || 0,
+                  longitude: item?.longitude || 0,
                 }}
                 anchor={{ x: 0.5, y: 0.5 }}
                 flat
                 tracksViewChanges={false}
-                key={item?.LoadPostID}
+                key={index}
               >
                 <Parcel height={50} width={50} />
               </Marker>

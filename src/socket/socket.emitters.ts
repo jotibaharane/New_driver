@@ -20,18 +20,34 @@ export interface DriverLocationPayload {
   Status: string;
 }
 
-// driver location send
 export const emitDriverLocation = (payload: DriverLocationPayload) => {
   const socket = getSocket();
-  if (!socket.connected) return;
-  socket.emit(SOCKET_EVENTS.DRIVER_LOCATION, payload);
+
+  const emit = () => {
+    socket.emit(SOCKET_EVENTS.DRIVER_LOCATION, payload);
+  };
+
+  if (socket.connected) {
+    emit();
+  } else {
+    socket.once('connect', emit);
+  }
 };
 
-export const emitDriverJoin = (payload: any) => {
+export const emitDriverJoin = (driverId: string) => {
   const socket = getSocket();
-  if (!socket.connected) return;
-  socket.emit(SOCKET_EVENTS.JOIN, {
-    userId: payload,
-    role: 'driver',
-  });
+
+  const emit = () => {
+    console.log('📤 Emitting JOIN for driver:', driverId);
+    socket.emit(SOCKET_EVENTS.JOIN, {
+      userId: driverId,
+      role: 'driver',
+    });
+  };
+
+  if (socket.connected) {
+    emit();
+  } else {
+    socket.once('connect', emit);
+  }
 };

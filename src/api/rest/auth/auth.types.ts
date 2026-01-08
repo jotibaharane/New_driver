@@ -80,7 +80,7 @@ export interface DriverDetails {
 
   VehicleID: string;
   registration_no: string;
-  vehicleType: string;
+  DriverVehicleType: string;
 
   AssignmentDate: string; // ISO Date
   insert_date: string; // ISO Date

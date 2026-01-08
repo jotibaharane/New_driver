@@ -94,7 +94,7 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
       setLoading(false);
     }
   };
-
+  console.log({ driverDetails });
   return (
     <Portal>
       <Loader visible={loading} />
@@ -119,7 +119,7 @@ const VehicleAvailableModal: FC<VehicleAvailableModalProps> = ({
                 vendorid: driverDetails?.VehicleID,
                 origin: {},
                 routes: [],
-                vehicleType: driverDetails?.vehicleType,
+                vehicleType: driverDetails?.DriverVehicleType,
                 vehicleNumber: driverDetails?.registration_no,
                 reportingTime: '',
                 vehicleStatus: 'Empty',
