@@ -1,4 +1,5 @@
 import { postCustomerLoadAccept } from '@api/index';
+import { emitAcceptLoad } from '@socket/socket.emitters';
 import { RootState } from '@store/index';
 import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
 import { setActiveDriverLp } from '@store/slices/driverLp.slice';
@@ -51,6 +52,11 @@ const AmountInputModal: FC<AmountInputModalProps> = ({
         ProposedAmount: proposedAmount,
       });
       if (response && response?.status === '00') {
+        emitAcceptLoad({
+          CustomerID: temp?.CustomerID,
+          DriverID: temp?.DriverID,
+          loadId: temp?.CustomerPostID,
+        });
         const tripData = response?.data[0];
         dispatch(setActiveDriverLp(tripData));
         setProposedAmount('');

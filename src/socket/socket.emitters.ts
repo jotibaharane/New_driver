@@ -24,7 +24,29 @@ export const emitDriverLocation = (payload: DriverLocationPayload) => {
   const socket = getSocket();
 
   const emit = () => {
-    socket.emit(SOCKET_EVENTS.DRIVER_LOCATION, payload);
+    socket.emit(SOCKET_EVENTS.DRIVER_LOCATION, {
+      DriverID: payload?.DriverID,
+      lat: payload?.lat,
+      lng: payload?.lng,
+    });
+  };
+
+  if (socket.connected) {
+    emit();
+  } else {
+    socket.once('connect', emit);
+  }
+};
+
+export const emitAcceptLoad = (payload: {
+  loadId: string;
+  DriverID: string;
+  CustomerID: string;
+}) => {
+  const socket = getSocket();
+
+  const emit = () => {
+    socket.emit(SOCKET_EVENTS.LOAD_ACCEPT, payload);
   };
 
   if (socket.connected) {
@@ -40,8 +62,9 @@ export const emitDriverJoin = (driverId: string) => {
   const emit = () => {
     console.log('📤 Emitting JOIN for driver:', driverId);
     socket.emit(SOCKET_EVENTS.JOIN, {
-      userId: driverId,
-      role: 'driver',
+      DriverID: driverId,
+      lat: 19.1418,
+      lng: 72.9313,
     });
   };
 

@@ -7,8 +7,9 @@ export const SOCKET_EVENTS = {
   DRIVER_LP_FLAG: 'driverLPFlag',
 
   // new
-  JOIN: 'join',
+  JOIN: 'driver:join',
   DRIVER_LOCATION: 'driver:location',
   AVAILABLE_LOADS: 'driver:available_loads',
-  AVAILABLE_OLD: 'driver:available_loads_old',
+  AVAILABLE_OLD: 'driver:new_load',
+  LOAD_ACCEPT: 'driver:accept_load',
 };
