@@ -1,4 +1,4 @@
-import { postCustomerLoadAccept } from '@api/index';
+import { postCustomerLoadAccept, useNearbyCustomersPostQuery } from '@api/index';
 import EmptyState from '@components/common/feedback/EmptyState';
 import { RootState } from '@store/index';
 import { DriverLoadPost } from '@store/slices/driverLp.types';
@@ -28,13 +28,15 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
   setShowLoadsModal,
 }) => {
   const [amountModalVisible, setAmountModalVisible] = useState(false);
+ const driver=useSelector((state:RootState)=>state?.auth?.driverDetails)
   const { list } = useSelector((s: RootState) => s.driverLp);
   const [temp, setTemp] = useState({
     CustomerID: '',
     DriverID: '',
     CustomerPostID: '',
   });
-
+ const {data}=useNearbyCustomersPostQuery({DriverID:driver?.DriverID||"",VehicleType:driver?.vehicleType||"",Lat:driver?.Lat!,Lng:driver?.Lng!})
+ console.log({data})
   const handleAccept = (post: DriverLoadPost) => {
     setTemp({
       CustomerID: post?.CustomerID,
