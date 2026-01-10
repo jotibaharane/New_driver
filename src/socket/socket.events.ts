@@ -1,16 +1,8 @@
+// socket.events.ts
 export const SOCKET_EVENTS = {
-  // DRIVER_LOCATION: 'driverLiveLocation',
-  // DRIVER_LOCATION: 'driverLiveLocation',
-  DRIVER_LP_STATUS: 'driverLPStatus',
-  // NEARBY_CUSTOMER_LOAD: 'nearestCustomerpost',
-  NEARBY_CUSTOMER_LOAD: 'NearbyCustomerLoadPost',
-  DRIVER_LP_FLAG: 'driverLPFlag',
-
-  // new
-  JOIN: 'driver:join',
+  JOIN: 'join',
   DRIVER_LOCATION: 'driver:location',
   AVAILABLE_LOADS: 'driver:available_loads',
-  AVAILABLE_OLD: 'driver:new_load',
   LOAD_ACCEPT: 'driver:accept_load',
-  ROOM_JOIN: 'join_driver_room',
+  NEW_LOAD: 'driver:new_load',
 };

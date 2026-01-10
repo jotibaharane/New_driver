@@ -14,7 +14,7 @@ const RootNavigator = () => {
 
   useEffect(() => {
     if (!driverDetails?.DriverID) return;
-    initSocket(driverDetails.DriverID);
+    initSocket();
     return () => {
       disconnectSocket();
     };

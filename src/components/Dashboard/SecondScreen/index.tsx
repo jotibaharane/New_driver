@@ -1,8 +1,8 @@
-import Loader from '@components/Common/ui/Loader';
-import DropMarker from '@components/Map/markers/DropMarker';
-import OriginMarker from '@components/Map/markers/OriginMarker';
-import Truck from '@components/Map/markers/Truck';
-import Parcel from '@components/Map/markers/parcel';
+import Loader from '@components/common/ui/Loader';
+import DropMarker from '@components/map/markers/DropMarker';
+import OriginMarker from '@components/map/markers/OriginMarker';
+import Truck from '@components/map/markers/Truck';
+import Parcel from '@components/map/markers/parcel';
 import { ENV } from '@config/env';
 import { RootState } from '@store/index';
 import { TRIP_STATUS } from '@store/slices/authSlice';
