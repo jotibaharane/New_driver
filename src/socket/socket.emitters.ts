@@ -60,7 +60,10 @@ export const emitDriverJoin = (driverId: string) => {
   const socket = getSocket();
 
   const emit = () => {
-    console.log('📤 Emitting JOIN for driver:', driverId);
+    // console.log('📤 Emitting JOIN for driver:', driverId);
+    //   socket.emit(SOCKET_EVENTS.ROOM_JOIN, {
+    //   DriverID: driverId,
+    // });
     socket.emit(SOCKET_EVENTS.JOIN, {
       DriverID: driverId,
       lat: 19.1418,

@@ -12,4 +12,5 @@ export const SOCKET_EVENTS = {
   AVAILABLE_LOADS: 'driver:available_loads',
   AVAILABLE_OLD: 'driver:new_load',
   LOAD_ACCEPT: 'driver:accept_load',
+  ROOM_JOIN: 'join_driver_room',
 };
