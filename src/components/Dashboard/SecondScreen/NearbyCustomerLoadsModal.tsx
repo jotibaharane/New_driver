@@ -1,8 +1,8 @@
-import { postCustomerLoadAccept } from '@api/index';
+import { postCustomerLoadAccept, useLazyNearbyCustomersPostQuery, useNearbyCustomersPostQuery } from '@api/index';
 import EmptyState from '@components/common/feedback/EmptyState';
 import { RootState } from '@store/index';
 import { DriverLoadPost } from '@store/slices/driverLp.types';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -27,13 +27,23 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
   showLoadsModal,
   setShowLoadsModal,
 }) => {
+  const driver=useSelector((state:RootState)=>state?.auth?.driverDetails)
   const [amountModalVisible, setAmountModalVisible] = useState(false);
+
   const { list } = useSelector((s: RootState) => s.driverLp);
   const [temp, setTemp] = useState({
     CustomerID: '',
     DriverID: '',
     CustomerPostID: '',
   });
+  const [getOffice,{data}]=useLazyNearbyCustomersPostQuery()
+ console.log({data})
+
+
+useEffect(()=>{
+  console.log({DriverID:driver?.DriverID!,VehicleType:driver?.vehicleType!,Lat:driver?.Lat!,Lng:driver?.Lng!})
+  getOffice({DriverID:driver?.DriverID!,VehicleType:driver?.vehicleType!,Lat:driver?.Lat!,Lng:driver?.Lng!})
+},[driver])
 
   const handleAccept = (post: DriverLoadPost) => {
     setTemp({
@@ -86,7 +96,7 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
 
           {/* Loads List */}
           <FlatList
-            data={list || []}
+            data={data?.data || []}
             renderItem={({ item }) => (
               <CustomerLoadCard
                 item={item}

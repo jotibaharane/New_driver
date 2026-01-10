@@ -157,6 +157,7 @@ export const {
   useGetStateQuery,
   useGetTalukaQuery,
   useNearbyCustomersPostQuery,
+  useLazyNearbyCustomersPostQuery
 } = locationApi;
 
 export default locationApi;
