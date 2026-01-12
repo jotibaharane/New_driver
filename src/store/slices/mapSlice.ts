@@ -6,6 +6,12 @@ export interface Coordinate {
   longitude: number;
   rotation: number;
 }
+export interface CustomerLocation {
+  customerId: string;
+  lat: number;
+  lng: number;
+  distance: number;
+}
 
 interface MapState {
   driverLocation: Coordinate | null;
@@ -34,8 +40,10 @@ const mapSlice = createSlice({
     setdriverLocation(state, action: PayloadAction<Coordinate>) {
       state.driverLocation = action.payload;
     },
-    setCustomerLocations(state, action: PayloadAction<Coordinate[]>) {
-      state.customerLocations = action.payload;
+    setCustomerLocations(state, action: PayloadAction<CustomerLocation[]>) {
+      state.customerLocations = action.payload?.map(item => {
+        return { latitude: item?.lat, longitude: item?.lng, rotation: 0 };
+      });
     },
     setPickupLocation(state, action: PayloadAction<Coordinate>) {
       state.pickupLocation = action.payload;

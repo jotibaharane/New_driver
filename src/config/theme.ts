@@ -8,27 +8,3 @@ export const COLORS = {
   white: '#FFFFFF',
   grey: '#9E9E9E',
 };
-
-export const SPACING = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-};
-
-export const TYPOGRAPHY = {
-  regular: 'System',
-  bold: 'System',
-  h1: 28,
-  h2: 24,
-  h3: 20,
-  body: 16,
-  small: 14,
-};
-
-export const THEME = {
-  COLORS,
-  SPACING,
-  TYPOGRAPHY,
-};
