@@ -15,13 +15,14 @@ const CustomerLoadCard: FC<CustomerLoadCardProps> = ({
   handleAccept,
   handleHold,
 }) => {
+  console.log({item})
   return (
     <View style={styles.postCard}>
       {/* Header with Post ID */}
       <View style={styles.cardHeader}>
         <View style={styles.postIdContainer}>
           <Text style={styles.postIdText}>
-            LOAD #{item.Customer_LoadPostID}
+            LOAD #{item?.LoadPostID}
           </Text>
         </View>
         <View style={styles.distanceBadge}>
@@ -41,7 +42,7 @@ const CustomerLoadCard: FC<CustomerLoadCardProps> = ({
           <View style={styles.locationTextContainer}>
             <Text style={styles.locationLabel}>Pickup Location</Text>
             <Text style={styles.locationAddress} numberOfLines={2}>
-              {item.PickupLocation || 'Unknown origin'}
+              {item.Origin || 'Unknown origin'}
             </Text>
           </View>
           <View style={styles.distanceContainer}>
@@ -71,7 +72,7 @@ const CustomerLoadCard: FC<CustomerLoadCardProps> = ({
           <View style={styles.locationTextContainer}>
             <Text style={styles.locationLabel}>Delivery Location</Text>
             <Text style={styles.locationAddress} numberOfLines={2}>
-              {item.DestinationLocation || 'Unknown destination'}
+              {item.Destination || 'Unknown destination'}
             </Text>
           </View>
           <View style={styles.distanceContainer}>

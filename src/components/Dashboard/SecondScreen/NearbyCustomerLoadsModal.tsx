@@ -27,10 +27,10 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
   showLoadsModal,
   setShowLoadsModal,
 }) => {
+
   const driver=useSelector((state:RootState)=>state?.auth?.driverDetails)
   const [amountModalVisible, setAmountModalVisible] = useState(false);
 
-  const { list } = useSelector((s: RootState) => s.driverLp);
   const [temp, setTemp] = useState({
     CustomerID: '',
     DriverID: '',
@@ -42,13 +42,13 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
 
 useEffect(()=>{
   console.log({DriverID:driver?.DriverID!,VehicleType:driver?.vehicleType!,Lat:driver?.Lat!,Lng:driver?.Lng!})
-  getOffice({DriverID:driver?.DriverID!,VehicleType:driver?.vehicleType!,Lat:driver?.Lat!,Lng:driver?.Lng!})
-},[driver])
+  if(showLoadsModal)getOffice({DriverID:driver?.DriverID!,VehicleType:driver?.vehicleType!,Lat:driver?.Lat!,Lng:driver?.Lng!})
+},[driver,showLoadsModal])
 
   const handleAccept = (post: DriverLoadPost) => {
     setTemp({
       CustomerID: post?.CustomerID,
-      DriverID: post?.DriverID,
+      DriverID: driver?.DriverID||"",
       CustomerPostID: post?.LoadPostID,
     });
     setAmountModalVisible(true);
@@ -57,7 +57,7 @@ useEffect(()=>{
     try {
       const response = await postCustomerLoadAccept({
         CustomerPostID: item?.LoadPostID,
-        DriverID: item?.DriverID,
+        DriverID: driver?.DriverID,
         CustomerID: item?.CustomerID,
         DriverStatus: 'Hold',
       });
@@ -83,7 +83,7 @@ useEffect(()=>{
           onPress={() => setShowLoadsModal(false)}
         />
         <View style={styles.modalContainer}>
-          {/* Draggable Handle */}
+          {/* Draggable Handle */} 
           <View style={styles.dragHandle} />
 
           {/* Modal Header */}

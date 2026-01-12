@@ -117,7 +117,7 @@ export const locationApi = createApi({
       }) => ({
         ...response,
         data: response.data.map((p): any => ({
-          LoadPostID: p.Customer_LoadPostID ?? 'N/A',
+          LoadPostID: p.LoadPostID ?? 'N/A',
           CustomerID: p.CustomerID ?? '',
           VehicleType: p.VehicleType ?? 'Unknown',
           BodyType: p.BodyType ?? '',
@@ -125,8 +125,8 @@ export const locationApi = createApi({
           CargoPackageType: p.CargoPackageType ?? '',
           ApproxWeight: p.ApproxWeight ?? '',
           DhalaLength: p.DhalaLength ?? '',
-          Origin: p.PickupLocation ?? 'Unknown origin',
-          Destination: p.DestinationLocation ?? 'Unknown destination',
+          Origin: p.PickupAddress ?? 'Unknown origin',
+          Destination: p.DeliveryAddress ?? 'Unknown destination',
           PickupLat: Number(p.PickupLat) || 0,
           PickupLng: Number(p.PickupLng) || 0,
           DeliveryLat: Number(p.DeliveryLat) || 0,
@@ -143,7 +143,7 @@ export const locationApi = createApi({
           Amount: p.Amount ?? '0',
           VehicleImage: p.VehicleImage ?? null,
           ProductImage: p.ProductImage ?? null,
-          Cargopackag_IMG: p.Cargopackag_IMG,
+          Cargopackag_IMG: p.CargoType_IMG,
           Vehicle_IMG: p.Vehicle_IMG,
         })),
       }),

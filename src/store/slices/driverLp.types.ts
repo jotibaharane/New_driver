@@ -1,47 +1,75 @@
 export interface DriverLoadPost {
-  LoadPostID: string;
-  DriverStatus: string;
-  DriverID: string;
-  CustomerID: string;
-  VendorID: string;
-  LP_Status: string;
-  Driver_LPStatus: string;
-  CustomerStatus: string;
+  // LoadPostID: string;
+  // DriverStatus: string;
+  // DriverID: string;
+  // CustomerID: string;
+  // VendorID: string;
+  // LP_Status: string;
+  // Driver_LPStatus: string;
+  // CustomerStatus: string;
 
-  DriverLat: number;
-  DriverLng: number;
-  DriverMobile: string;
-  DriverVehicleNumber: string;
-  DriverLastUpdate: string;
+  // DriverLat: number;
+  // DriverLng: number;
+  // DriverMobile: string;
+  // DriverVehicleNumber: string;
+  // DriverLastUpdate: string;
 
-  DriverAvailabilityStatus: string;
-  DriverVehicleStatus: string;
-  DriverCurrentLoadPostID: string;
+  // DriverAvailabilityStatus: string;
+  // DriverVehicleStatus: string;
+  // DriverCurrentLoadPostID: string;
 
-  PostDate: string;
-  PickupLocation: string;
-  PickupLat: number;
-  PickupLng: number;
+  // PostDate: string;
+  // PickupLocation: string;
+  // PickupLat: number;
+  // PickupLng: number;
 
-  DeliveryLat: number;
-  DeliveryLng: number;
-  PickupDistanceKm: number;
-  DestinationLocation: string;
-  DestinationDistanceKm: number;
+  // DeliveryLat: number;
+  // DeliveryLng: number;
+  // PickupDistanceKm: number;
+  // DestinationLocation: string;
+  // DestinationDistanceKm: number;
 
-  VehicleType: string;
-  BodyType: string;
-  CargoContent: string;
-  CargoPackageType: string;
-  ApproxWeight: string;
+  // VehicleType: string;
+  // BodyType: string;
+  // CargoContent: string;
+  // CargoPackageType: string;
+  // ApproxWeight: string;
 
-  ExpectedAvailableTime: string;
-  RemainingMinutes: number;
-  RemainingTimeFormatted: string;
+  // ExpectedAvailableTime: string;
+  // RemainingMinutes: number;
+  // RemainingTimeFormatted: string;
 
-  CargoTypes_IMG: string;
-  Cargopackag_IMG: string;
-  Vehicle_IMG: string;
+  // CargoTypes_IMG: string;
+  // Cargopackag_IMG: string;
+  // Vehicle_IMG: string;
+   LoadPostID:string,
+          CustomerID: string,
+          VehicleType: string,
+          BodyType: string,
+          CargoContent: string,
+          CargoPackageType: string,
+          ApproxWeight: string,
+          DhalaLength: string,
+          Origin: string,
+          Destination: string,
+          PickupLat: number,
+          PickupLng: number,
+          DeliveryLat: number,
+          DeliveryLng: number,
+          PickupDistanceKm: number,
+          DestinationDistanceKm: number,
+          DistanceInKm:
+            number,
+          PostDate:any,
+          ExpectedAvailableTime:any,
+          RemainingMinutes:any,
+          RemainingTimeFormatted:any,
+          status: string,
+          Amount: string,
+          VehicleImage: any,
+          ProductImage: any,
+          Cargopackag_IMG: any,
+          Vehicle_IMG: any,
 }
 
 export interface AcceptedLoadPostDetails {

@@ -49,8 +49,8 @@ const SecondScreen: FC = () => {
       customerLocations.forEach(item => {
         if (item?.latitude && item?.longitude) {
           coordinates.push({
-            latitude: item.latitude,
-            longitude: item.longitude,
+            latitude: Number(item.latitude),
+            longitude: Number(item.longitude),
           });
         }
       });
@@ -98,6 +98,8 @@ const SecondScreen: FC = () => {
     }
   }, [driverLocation, customerLocations, tripStatus]);
 
+
+
   return (
     <>
       <Loader visible={false} />
@@ -133,8 +135,8 @@ const SecondScreen: FC = () => {
             customerLocations?.map((item, index) => (
               <Marker
                 coordinate={{
-                  latitude: item?.latitude || 0,
-                  longitude: item?.longitude || 0,
+                  latitude: Number(item?.latitude) || 0,
+                  longitude: Number(item?.longitude) || 0,
                 }}
                 anchor={{ x: 0.5, y: 0.5 }}
                 flat
