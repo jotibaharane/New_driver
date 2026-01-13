@@ -5,4 +5,6 @@ export const SOCKET_EVENTS = {
   AVAILABLE_LOADS: 'driver:available_loads',
   LOAD_ACCEPT: 'driver:accept_load',
   NEW_LOAD: 'driver:new_load',
+  // local
+  
 };

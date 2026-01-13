@@ -53,7 +53,6 @@ const AmountInputModal: FC<AmountInputModalProps> = ({
       });
       if (response && response?.status === '00') {
         emitAcceptLoad({
-          CustomerID: temp?.CustomerID,
           DriverID: temp?.DriverID,
           loadId: temp?.CustomerPostID,
         });

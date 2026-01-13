@@ -117,7 +117,7 @@ export interface DriverDetails {
   registration_no: string;
   vehicleType: string;
   AssignmentDate: string; // ISO date string
-  Status: 'Available' | 'Assigned' | 'On Trip' | string;
+  Status: 'Assigned' | 'On Trip' | string;
   Lat: number;
   Lng: number;
   City: string;
