@@ -6,5 +6,5 @@ export const SOCKET_EVENTS = {
   LOAD_ACCEPT: 'driver:accept_load',
   NEW_LOAD: 'driver:new_load',
   // local
-  
+  UPDATE_STATUS: 'driver:update_status',
 };

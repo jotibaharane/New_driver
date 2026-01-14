@@ -45,8 +45,7 @@ const SecondScreen: FC = () => {
     }
 
     // Load origins
-    if (customerLocations?.length&&
-active?.DriverStatus!=="Accepted") {
+    if (customerLocations?.length && active?.DriverStatus !== 'Accepted') {
       customerLocations.forEach(item => {
         if (item?.latitude && item?.longitude) {
           coordinates.push({
@@ -75,7 +74,7 @@ active?.DriverStatus!=="Accepted") {
       });
     }
 
-    console.log({coordinates})
+    console.log({ coordinates });
     // Fit map only if we have at least one coordinate
     if (coordinates.length === 1) {
       // Single marker → normal zoom
@@ -100,8 +99,7 @@ active?.DriverStatus!=="Accepted") {
     }
   }, [driverLocation, customerLocations, tripStatus]);
 
-
-console.log({driverLocation,customerLocations,active})
+  console.log({ driverLocation, customerLocations, active });
   return (
     <>
       <Loader visible={false} />

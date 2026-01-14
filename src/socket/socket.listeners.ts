@@ -21,6 +21,10 @@ export const registerSocketListeners = () => {
       store.dispatch(setCustomerLocations(loads));
     });
 
+    socket.on('lp:status_update', data => {
+      console.log('🔔 STATUS:', data);
+    });
+
     // socket.on(SOCKET_EVENTS.NEW_LOAD, load => {
     //   console.log('🆕 New Load:', load);
     //   store.dispatch(setCustomerLocations([load]));

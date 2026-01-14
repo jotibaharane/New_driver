@@ -85,6 +85,7 @@ const LoadingStatusModal: FC<Props> = ({ visible, setVisible }) => {
         CustomerPostID: active?.CustomerPostID || '',
         DriverID: active?.DriverID || '',
         CustomerID: active?.CustomerID || '',
+        DriverStatus: 'Loaded',
         truckFrontView: photos.truckFrontView || '',
         emptyDhala: photos.emptyDhala || '',
         goodsLoadingStart: photos.goodsLoadingStart || '',
