@@ -1,5 +1,6 @@
 // socket.listeners.ts
 import { store } from '@store/index';
+import { setTripStatus } from '@store/slices/authSlice';
 import { setCustomerLocations } from '@store/slices/mapSlice';
 import { SOCKET_EVENTS } from './socket.events';
 import { getSocket } from './socket.service';
@@ -21,10 +22,13 @@ export const registerSocketListeners = () => {
       store.dispatch(setCustomerLocations(loads));
     });
 
-    socket.on('lp:status_update', data => {
+    socket.on(SOCKET_EVENTS.DRIVER_STATUS, data => {
       console.log('🔔 STATUS:', data);
+      store.dispatch(setTripStatus(data?.LPStatus));
     });
-
+    // socket.on('driver:start_tracking', data => {
+    //   console.log('▶ Load Assigned: ' + JSON.stringify(data));
+    // });
     // socket.on(SOCKET_EVENTS.NEW_LOAD, load => {
     //   console.log('🆕 New Load:', load);
     //   store.dispatch(setCustomerLocations([load]));

@@ -2,10 +2,14 @@
 import { SOCKET_EVENTS } from './socket.events';
 import { getSocket } from './socket.service';
 
-export const emitDriverJoin = (driverId: string) => {
+export const emitDriverJoin = (driverId: string, vendorId: string) => {
   const socket = getSocket();
   const emit = () =>
-    socket.emit(SOCKET_EVENTS.JOIN, { userId: driverId, role: 'driver' });
+    socket.emit(SOCKET_EVENTS.JOIN, {
+      userId: driverId,
+      role: 'driver',
+      VendorID: vendorId,
+    });
 
   socket.connected ? emit() : socket.once('connect', emit);
 };

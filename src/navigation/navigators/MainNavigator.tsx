@@ -20,7 +20,7 @@ const MainNavigator = () => {
     if (!driverDetails?.DriverID) return;
 
     registerSocketListeners();
-    emitDriverJoin(driverDetails.DriverID);
+    emitDriverJoin(driverDetails.DriverID, driverDetails?.VendorID);
   }, [driverDetails?.DriverID]);
   return (
     <Stack.Navigator

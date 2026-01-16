@@ -7,4 +7,5 @@ export const SOCKET_EVENTS = {
   NEW_LOAD: 'driver:new_load',
   // local
   UPDATE_STATUS: 'driver:update_status',
+  DRIVER_STATUS: 'driver:lp_status_updated',
 };
