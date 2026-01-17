@@ -1,8 +1,11 @@
-import { postCustomerLoadAccept, useLazyNearbyCustomersPostQuery, useNearbyCustomersPostQuery } from '@api/index';
+import {
+  postCustomerLoadAccept,
+  useNearbyCustomersPostQuery,
+} from '@api/index';
 import EmptyState from '@components/common/feedback/EmptyState';
 import { RootState } from '@store/index';
 import { DriverLoadPost } from '@store/slices/driverLp.types';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -27,8 +30,11 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
   showLoadsModal,
   setShowLoadsModal,
 }) => {
+  const driver = useSelector((state: RootState) => state?.auth?.driverDetails);
+  const liveDriverLocation = useSelector(
+    (state: RootState) => state?.map.driverLocation,
+  );
 
-  const driver=useSelector((state:RootState)=>state?.auth?.driverDetails)
   const [amountModalVisible, setAmountModalVisible] = useState(false);
 
   const [temp, setTemp] = useState({
@@ -36,19 +42,17 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
     DriverID: '',
     CustomerPostID: '',
   });
-  const [getOffice,{data}]=useLazyNearbyCustomersPostQuery()
- console.log({data})
-
-
-useEffect(()=>{
-  console.log({DriverID:driver?.DriverID!,VehicleType:driver?.vehicleType!,Lat:driver?.Lat!,Lng:driver?.Lng!})
-  if(showLoadsModal)getOffice({DriverID:driver?.DriverID!,VehicleType:driver?.vehicleType!,Lat:driver?.Lat!,Lng:driver?.Lng!})
-},[driver,showLoadsModal])
+  const { data } = useNearbyCustomersPostQuery({
+    DriverID: driver?.DriverID!,
+    VehicleType: driver?.vehicleType!,
+    Lat: liveDriverLocation?.latitude!,
+    Lng: liveDriverLocation?.longitude!,
+  });
 
   const handleAccept = (post: DriverLoadPost) => {
     setTemp({
       CustomerID: post?.CustomerID,
-      DriverID: driver?.DriverID||"",
+      DriverID: driver?.DriverID || '',
       CustomerPostID: post?.LoadPostID,
     });
     setAmountModalVisible(true);
@@ -83,7 +87,7 @@ useEffect(()=>{
           onPress={() => setShowLoadsModal(false)}
         />
         <View style={styles.modalContainer}>
-          {/* Draggable Handle */} 
+          {/* Draggable Handle */}
           <View style={styles.dragHandle} />
 
           {/* Modal Header */}
