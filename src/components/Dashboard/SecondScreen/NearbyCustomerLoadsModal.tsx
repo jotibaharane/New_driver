@@ -1,11 +1,11 @@
 import {
   postCustomerLoadAccept,
-  useNearbyCustomersPostQuery,
+  useLazyNearbyCustomersPostQuery,
 } from '@api/index';
 import EmptyState from '@components/common/feedback/EmptyState';
 import { RootState } from '@store/index';
 import { DriverLoadPost } from '@store/slices/driverLp.types';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -42,12 +42,18 @@ const NearbyCustomerLoadsModal: FC<NearbyCustomerLoadsModalProps> = ({
     DriverID: '',
     CustomerPostID: '',
   });
-  const { data } = useNearbyCustomersPostQuery({
-    DriverID: driver?.DriverID!,
-    VehicleType: driver?.vehicleType!,
-    Lat: liveDriverLocation?.latitude!,
-    Lng: liveDriverLocation?.longitude!,
-  });
+
+  const [getOffice, { data }] = useLazyNearbyCustomersPostQuery();
+
+  useEffect(() => {
+    if (showLoadsModal)
+      getOffice({
+        DriverID: driver?.DriverID!,
+        VehicleType: driver?.vehicleType!,
+        Lat: liveDriverLocation?.latitude!,
+        Lng: liveDriverLocation?.longitude!,
+      });
+  }, [driver, showLoadsModal, liveDriverLocation]);
 
   const handleAccept = (post: DriverLoadPost) => {
     setTemp({
