@@ -19,10 +19,10 @@ export default WaitingCard;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F6F7FB',
+    margin: 10,
   },
   card: {
     width: '85%',

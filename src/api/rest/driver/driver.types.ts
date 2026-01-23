@@ -52,6 +52,7 @@ export interface LoadVerificationImages {
   CustomerPostID: string;
   CustomerID: string;
   DriverID: string;
+  DriverStatus: string;
 
   truckFrontView: Base64Image;
   emptyDhala: Base64Image;

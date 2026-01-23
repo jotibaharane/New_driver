@@ -25,3 +25,6 @@ export const postCustomerLoadAccept = (payload: any) =>
 
 export const postLoadingStatusPhotos = (payload: LoadVerificationImages) =>
   apiClient.post('/loading_Image', payload).then(r => r.data);
+
+export const postCustomerLoadLoaded = (payload: any) =>
+  apiClient.post('/Customer_PostStatus', payload).then(r => r.data);

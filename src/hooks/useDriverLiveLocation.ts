@@ -77,7 +77,7 @@ export const useDriverLiveLocation = ({
                   latitude,
                   longitude,
                   speed,
-                  status: isOnline ? 'Online' : 'Offline',
+                  status: 'Online',
                   tripStatus,
                 });
 

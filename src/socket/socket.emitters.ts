@@ -2,10 +2,14 @@
 import { SOCKET_EVENTS } from './socket.events';
 import { getSocket } from './socket.service';
 
-export const emitDriverJoin = (driverId: string) => {
+export const emitDriverJoin = (driverId: string, vendorId: string) => {
   const socket = getSocket();
   const emit = () =>
-    socket.emit(SOCKET_EVENTS.JOIN, { userId: driverId, role: "driver" });
+    socket.emit(SOCKET_EVENTS.JOIN, {
+      userId: driverId,
+      role: 'driver',
+      VendorID: vendorId,
+    });
 
   socket.connected ? emit() : socket.once('connect', emit);
 };
@@ -16,8 +20,7 @@ export const emitDriverLocation = (payload: {
   lng: number;
 }) => {
   const socket = getSocket();
-  const emit = () =>
-    socket.emit(SOCKET_EVENTS.DRIVER_LOCATION, payload);
+  const emit = () => socket.emit(SOCKET_EVENTS.DRIVER_LOCATION, payload);
 
   socket.connected ? emit() : socket.once('connect', emit);
 };
@@ -27,8 +30,7 @@ export const emitAcceptLoad = (payload: {
   DriverID: string;
 }) => {
   const socket = getSocket();
-  const emit = () =>
-    socket.emit(SOCKET_EVENTS.LOAD_ACCEPT, payload);
+  const emit = () => socket.emit(SOCKET_EVENTS.LOAD_ACCEPT, payload);
 
   socket.connected ? emit() : socket.once('connect', emit);
 };

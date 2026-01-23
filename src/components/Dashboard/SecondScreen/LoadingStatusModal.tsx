@@ -14,7 +14,7 @@ import { Icon } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { postLoadingStatusPhotos } from '@api/index';
+import { postCustomerLoadLoaded, postLoadingStatusPhotos } from '@api/index';
 import { RootState } from '@store/index';
 import { setTripStatus, TRIP_STATUS } from '@store/slices/authSlice';
 import {
@@ -85,6 +85,7 @@ const LoadingStatusModal: FC<Props> = ({ visible, setVisible }) => {
         CustomerPostID: active?.CustomerPostID || '',
         DriverID: active?.DriverID || '',
         CustomerID: active?.CustomerID || '',
+        DriverStatus: 'Loaded',
         truckFrontView: photos.truckFrontView || '',
         emptyDhala: photos.emptyDhala || '',
         goodsLoadingStart: photos.goodsLoadingStart || '',
@@ -94,6 +95,12 @@ const LoadingStatusModal: FC<Props> = ({ visible, setVisible }) => {
       });
 
       if (res?.status === '00') {
+        await postCustomerLoadLoaded({
+          CustomerPostID: active?.CustomerPostID || '',
+          DriverID: active?.DriverID || '',
+          CustomerID: active?.CustomerID || '',
+          DriverStatus: 'Loaded',
+        });
         dispatch(setTripStatus(TRIP_STATUS.Loaded));
         dispatch(resetLoadingPhotos());
         setVisible(false);
