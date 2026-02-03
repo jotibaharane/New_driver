@@ -16,6 +16,9 @@ import { RootState } from '@store/index';
 import { TRIP_STATUS } from '@store/slices/authSlice';
 import { INDIA_REGION, MAP_STYLE } from './helper';
 
+import VDLTSheetModal from './CreateTripeSheet';
+import GenerateEBillPartBModal from './GenerateEBillPartB';
+import LoadReceiptScreen from './LoadReciptScreen';
 import LoadingStatusModal from './LoadingStatusModal';
 import NearbyCustomerLoadsModal from './NearbyCustomerLoadsModal';
 import OTPModal from './OTPModal';
@@ -53,6 +56,12 @@ const SecondScreen: FC = () => {
     tripStatus,
   });
   const [showLoadsModal, setShowLoadsModal] = useState(false);
+  const [showLR, setLRModal] = useState(false);
+  const [showVDLT, setVDLTModal] = useState(false);
+  const [
+    showGenerateEBillPartBModalModal,
+    setShowGenerateEBillPartBModalModal,
+  ] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showLoadingStatus, setShowLoadingStatus] = useState(false);
@@ -306,9 +315,44 @@ const SecondScreen: FC = () => {
         TRIP_STATUS.Progress,
         TRIP_STATUS.Reached,
         TRIP_STATUS.Loading,
-      ].includes(tripStatus) && <WaitingCard />}
+      ].includes(tripStatus) && (
+        <>
+          <WaitingCard />
+          <View style={styles.row}>
+            <Button
+              mode="contained"
+              onPress={() => setLRModal(true)}
+              style={styles.flexBtn}
+            >
+              Create LR
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => setVDLTModal(true)}
+              style={styles.flexBtn}
+            >
+              Create Tripe Sheet
+            </Button>
+          </View>
+          <View style={{}}>
+            <Button
+              mode="contained"
+              style={{ marginBottom: 5, marginHorizontal: 15 }}
+              onPress={() => setShowGenerateEBillPartBModalModal(true)}
+            >
+              Generate E Bill Part B
+            </Button>
+          </View>
+        </>
+      )}
 
       {/* ------------------ MODALS ------------------ */}
+      <VDLTSheetModal visible={showVDLT} setVisible={setVDLTModal} />
+      <LoadReceiptScreen visible={showLR} setVisible={setLRModal} />
+      <GenerateEBillPartBModal
+        visible={showGenerateEBillPartBModalModal}
+        setVisible={setShowGenerateEBillPartBModalModal}
+      />
       <NearbyCustomerLoadsModal
         showLoadsModal={showLoadsModal}
         setShowLoadsModal={setShowLoadsModal}
